@@ -1,12 +1,11 @@
 package gm.rutasback.model;
 
-import jakarta.persistence.*;
-import org.springframework.util.RouteMatcher;
 
+import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(names = "cities")
+@Table(name = "cities")
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,21 +20,20 @@ public class City {
     @OneToMany(mappedBy = "city")
     private Set<Route> routes;
 
-    //CONSTRUCTORS, GETTERS, SETTERS
-    publico City() {}
+    // Constructors, getters, setters
+    public City() {}
 
     public City(String name) {
         this.name = name;
     }
 
-    //GETTERS AND SETTERS
+    // Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
-    public Set<Employee> getEmployees(){ return employees; }
+    public Set<Employee> getEmployees() { return employees; }
     public void setEmployees(Set<Employee> employees) { this.employees = employees; }
-    public Set<RouteMatcher.Route> getRoutes() { return routes; }
-    public void setRoutes(Set<RouteMatcher.Route> routes) { this.routes = routes; }
-
+    public Set<Route> getRoutes() { return routes; }
+    public void setRoutes(Set<Route> routes) { this.routes = routes; }
 }

@@ -26,6 +26,33 @@ public class Route {
     @ManyToOne
     @JoinColumn(name = "driver_id", nullable = false)
     private Employee driver;
-    
 
+    // Constructors, getters, setters
+    public Route() {}
+
+    public Route(String name, RouteType type, Integer capacity, City city, Employee driver) {
+        this.name = name;
+        this.type = type;
+        this.capacity = capacity;
+        this.city = city;
+        this.driver = driver;
+    }
+
+    // Getters and setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public RouteType getType() { return type; }
+    public void setType(RouteType type) { this.type = type; }
+    public Integer getCapacity() { return capacity; }
+    public void setCapacity(Integer capacity) { this.capacity = capacity; }
+    public City getCity() { return city; }
+    public void setCity(City city) { this.city = city; }
+    public Employee getDriver() { return driver; }
+    public void setDriver(Employee driver) { this.driver = driver; }
+}
+
+enum RouteType {
+    PERSONNEL, ITEMS
 }

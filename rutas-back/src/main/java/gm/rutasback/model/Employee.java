@@ -1,5 +1,6 @@
 package gm.rutasback.model;
 
+
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
@@ -24,10 +25,10 @@ public class Employee {
     private LocalDate birthDate;
 
     @Column(nullable = false)
-    private double salary;
+    private Double salary;
 
     @Column(nullable = false)
-    private boolean active;
+    private Boolean active = true;
 
     @ManyToOne
     @JoinColumn(name = "city_id", nullable = false)
@@ -36,19 +37,36 @@ public class Employee {
     @OneToMany(mappedBy = "driver")
     private Set<Route> routes;
 
-
-    //CONSTRUCCTORS, GETTERS, SETTERS
+    // Constructors, getters, setters
     public Employee() {}
 
-    public Employee(String firstName, String lastName, String motherLastName, LocalDate birthDate, Double salary, City city) {
+    public Employee(String firstName, String lastName, String motherLastName,
+                    LocalDate birthDate, Double salary, City city) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.motherLastName = motherLastName;
         this.birthDate = birthDate;
         this.salary = salary;
         this.city = city;
-
     }
-    // GETTERS AND SETTERS
 
+    // Getters and setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getFirstName() { return firstName; }
+    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public String getLastName() { return lastName; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
+    public String getMotherLastName() { return motherLastName; }
+    public void setMotherLastName(String motherLastName) { this.motherLastName = motherLastName; }
+    public LocalDate getBirthDate() { return birthDate; }
+    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
+    public Double getSalary() { return salary; }
+    public void setSalary(Double salary) { this.salary = salary; }
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
+    public City getCity() { return city; }
+    public void setCity(City city) { this.city = city; }
+    public Set<Route> getRoutes() { return routes; }
+    public void setRoutes(Set<Route> routes) { this.routes = routes; }
 }
