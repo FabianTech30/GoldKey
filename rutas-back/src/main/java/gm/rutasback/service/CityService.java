@@ -5,11 +5,18 @@ import com.cormex.repository.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-public interface CityService {
+public class CityService {
     @Autowired
     private CityRepository cityRepository;
 
-    public List
+    public List<City> getAllCities() {
+        return cityRepository.findAll();
+    }
 
+    public City getCityById(Long id) {
+        return cityRepository.findById(id).orElse(null);
+    }
 }
