@@ -24,7 +24,7 @@ public class RouteDTO {
     @NotNull(message = "Driver ID is required")
     private Long driverId;
 
-    // Getters and setters
+    // Getters and setter
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }
