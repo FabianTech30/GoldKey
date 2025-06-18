@@ -2,7 +2,9 @@ package gm.rutasback.dto;
 
 import gm.rutasback.model.RouteType;
 import jakarta.validation.constraints.*;
+import lombok.Data;
 
+@Data
 public class RouteDTO {
     private Long id;
 
@@ -24,17 +26,4 @@ public class RouteDTO {
     @NotNull(message = "Driver ID is required")
     private Long driverId;
 
-    // Getters and setter
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public RouteType getType() { return type; }
-    public void setType(RouteType type) { this.type = type; }
-    public Integer getCapacity() { return capacity; }
-    public void setCapacity(Integer capacity) { this.capacity = capacity; }
-    public Long getCityId() { return cityId; }
-    public void setCityId(Long cityId) { this.cityId = cityId; }
-    public Long getDriverId() { return driverId; }
-    public void setDriverId(Long driverId) { this.driverId = driverId; }
 }

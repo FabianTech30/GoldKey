@@ -1,6 +1,5 @@
 package gm.rutasback.controller;
 
-
 import gm.rutasback.dto.EmployeeDTO;
 import gm.rutasback.model.City;
 import gm.rutasback.model.Employee;
@@ -16,21 +15,26 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/employees")
+@RequestMapping("/employees")
 public class EmployeeController {
-    @Autowired
     private EmployeeService employeeService;
-
-    @Autowired
     CityService cityService;
 
+    @Autowired
+    public EmployeeController(EmployeeService employeeService, CityService cityService) {
+        this.employeeService = employeeService;
+        this.cityService = cityService;
+    }
+
     @GetMapping("/city/{cityId}")
-    public List<Employee> getActiveEmployeesByCity(@PathVariable Long cityId) {
+    public ResponseEntity<List<Employee>> getActiveEmployeesByCity(@PathVariable Long cityId) {
         City city = cityService.getCityById(cityId);
         if (city == null) {
-            throw new IllegalArgumentException("City not found");
+            throw new IllegalArgumentException("City not found with id: " + cityId);
         }
-        return employeeService.getActiveEmployeesByCity(city);
+
+        List<Employee> employees = employeeService.getActiveEmployeesByCity(city);
+        return ResponseEntity.ok(employees);
     }
 
     @PostMapping
@@ -64,6 +68,5 @@ public class EmployeeController {
         employeeService.deleteEmployee(id);
         return ResponseEntity.noContent().build();
     }
-
 
 }

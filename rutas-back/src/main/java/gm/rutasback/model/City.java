@@ -1,11 +1,13 @@
 package gm.rutasback.model;
 
-
 import jakarta.persistence.*;
-import java.util.Set;
+import lombok.Data;
+
+import java.util.List;
 
 @Entity
 @Table(name = "cities")
+@Data
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,10 +17,10 @@ public class City {
     private String name;
 
     @OneToMany(mappedBy = "city")
-    private Set<Employee> employees;
+    private List<Employee> employees;
 
     @OneToMany(mappedBy = "city")
-    private Set<Route> routes;
+    private List<Route> routes;
 
     // Constructors, getters, setters
     public City() {}
@@ -27,13 +29,4 @@ public class City {
         this.name = name;
     }
 
-    // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public Set<Employee> getEmployees() { return employees; }
-    public void setEmployees(Set<Employee> employees) { this.employees = employees; }
-    public Set<Route> getRoutes() { return routes; }
-    public void setRoutes(Set<Route> routes) { this.routes = routes; }
 }

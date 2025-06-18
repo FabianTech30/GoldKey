@@ -1,6 +1,6 @@
 package gm.rutasback.controller;
 
-
+import gm.rutasback.dto.GetAllCitiesCityResponseDTO;
 import gm.rutasback.model.City;
 import gm.rutasback.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,24 +12,23 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/cities")
+@RequestMapping("/cities")
 public class CityController {
     @Autowired
     private CityService cityService;
 
     @GetMapping
-    public List<City>getAllCities() {
-        return cityService.getAllCities();
+    public List<GetAllCitiesCityResponseDTO> getAllCities() {
+        return cityService.getAllCities()
+                .stream()
+                .map(city -> new GetAllCitiesCityResponseDTO(city.getId(), city.getName()))
+                .toList();
     }
-
 
     @GetMapping("/{id}")
-    public City getCityById(@PathVariable Long id) {
-        return cityService.getCityById(id);
+    public GetAllCitiesCityResponseDTO getCityById(@PathVariable Long id) {
+        City city = cityService.getCityById(id);
+        return new GetAllCitiesCityResponseDTO(city.getId(), city.getName());
     }
-
-
-
-
 
 }

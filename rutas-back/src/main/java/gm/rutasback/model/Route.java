@@ -1,9 +1,11 @@
 package gm.rutasback.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "routes")
+@Data
 public class Route {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,18 +40,5 @@ public class Route {
         this.driver = driver;
     }
 
-    // Getters and setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public RouteType getType() { return type; }
-    public void setType(RouteType type) { this.type = type; }
-    public Integer getCapacity() { return capacity; }
-    public void setCapacity(Integer capacity) { this.capacity = capacity; }
-    public City getCity() { return city; }
-    public void setCity(City city) { this.city = city; }
-    public Employee getDriver() { return driver; }
-    public void setDriver(Employee driver) { this.driver = driver; }
 }
 

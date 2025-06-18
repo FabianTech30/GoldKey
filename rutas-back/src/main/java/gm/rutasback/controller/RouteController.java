@@ -17,7 +17,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/routes")
+@RequestMapping("/routes")
 public class RouteController {
     @Autowired
     private RouteService routeService;
