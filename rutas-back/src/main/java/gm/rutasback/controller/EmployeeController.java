@@ -17,43 +17,40 @@ import java.util.List;
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
+    @Autowired
     private EmployeeService employeeService;
-    CityService cityService;
 
     @Autowired
-    public EmployeeController(EmployeeService employeeService, CityService cityService) {
-        this.employeeService = employeeService;
-        this.cityService = cityService;
-    }
+    private CityService cityService;
 
     @GetMapping("/city/{cityId}")
-    public ResponseEntity<List<Employee>> getActiveEmployeesByCity(@PathVariable Long cityId) {
+    public List<Employee> getActiveEmployeesByCity(@PathVariable Long cityId) {
         City city = cityService.getCityById(cityId);
         if (city == null) {
-            throw new IllegalArgumentException("City not found with id: " + cityId);
+            throw new IllegalArgumentException("City not found");
         }
-
-        List<Employee> employees = employeeService.getActiveEmployeesByCity(city);
-        return ResponseEntity.ok(employees);
+        return employeeService.getActiveEmployeesByCity(city);
     }
 
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO){
+    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
         City city = cityService.getCityById(employeeDTO.getCityId());
         if (city == null) {
             throw new IllegalArgumentException("City not found");
         }
+
         Employee employee = new Employee(
-          employeeDTO.getFirstName(),
-          employeeDTO.getLastName(),
-          employeeDTO.getMotherLastName(),
-          employeeDTO.getBirthDate(),
-          employeeDTO.getSalary(),
-          city
+                employeeDTO.getFirstName(),
+                employeeDTO.getLastName(),
+                employeeDTO.getMotherLastName(),
+                employeeDTO.getBirthDate(),
+                employeeDTO.getSalary(),
+                city
         );
 
         Employee savedEmployee = employeeService.createEmployee(employee);
-        return ResponseEntity.created(URI.create("/api/employees/"+ savedEmployee.getId())).body(savedEmployee);
+        return ResponseEntity.created(URI.create("/api/employees/" + savedEmployee.getId()))
+                .body(savedEmployee);
     }
 
     @PutMapping("/{id}")
@@ -63,10 +60,10 @@ public class EmployeeController {
             @RequestParam Double salary) {
         return employeeService.updateEmployee(id, birthDate, salary);
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
         return ResponseEntity.noContent().build();
     }
-
 }
