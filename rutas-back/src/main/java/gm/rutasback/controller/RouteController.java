@@ -91,6 +91,7 @@ public class RouteController {
 
         return routeService.updateRoute(id,type,capacity,driver);
     }
+
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteRoute(@PathVariable Long id) {
         routeService.deleteRoute(id);
