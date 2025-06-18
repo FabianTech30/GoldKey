@@ -1,8 +1,9 @@
 package gm.rutasback.service;
 
-import com.cormex.model.City;
-import com.cormex.model.Employee;
-import com.cormex.repository.EmployeeRepository;
+
+import gm.rutasback.model.City;
+import gm.rutasback.model.Employee;
+import gm.rutasback.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

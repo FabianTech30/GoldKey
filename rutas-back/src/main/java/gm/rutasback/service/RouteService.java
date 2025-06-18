@@ -1,7 +1,10 @@
 package gm.rutasback.service;
 
-import com.cormex.model.*;
-import com.cormex.repository.RouteRepository;
+import gm.rutasback.model.City;
+import gm.rutasback.model.Employee;
+import gm.rutasback.model.Route;
+import gm.rutasback.model.RouteType;
+import gm.rutasback.repository.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

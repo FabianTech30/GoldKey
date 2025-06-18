@@ -53,6 +53,3 @@ public class Route {
     public void setDriver(Employee driver) { this.driver = driver; }
 }
 
-enum RouteType {
-    PERSONNEL, ITEMS
-}
