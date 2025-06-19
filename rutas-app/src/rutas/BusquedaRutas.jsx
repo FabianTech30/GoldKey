@@ -12,12 +12,15 @@ export default function BusquedaRutas() {
         <div className='container text-center text-4xl bg-gray-500 text-white' style={{marginTop: '10px'}}>
             <h1>Busqueda de Rutas</h1>
         </div>
-         <div className=' container dark:bg-gray-800text-justify text-1xl p-2 border-4 border-gray-500' style={{marginTop: '20px'}} >
+         <div className='container dark:bg-gray-800text-justify text-1xl p-2 border-4 border-gray-500' style={{marginTop: '20px'}} >
             <h3 className='p-2'>CIUDAD</h3>
             <ComboBox 
             options={cities}
             label=""
             />
+            <a href="/busqueda" className='bg-orange-200 hover:bg-blue-700 text-black font-bold ' style={{marginTop: '20px'}}>
+                    Buscar
+              </a>
             <div className='flex justify-between items-center' style={{marginTop: '20px'}}>
               <h3 className='text-3xl'>RUTAS POR CIUDAD</h3>
               <a href="/" className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' style={{marginTop: '20px'}}>
@@ -69,7 +72,7 @@ export default function BusquedaRutas() {
                             </button>
                         </td>
                         <td class="px-6 py-4">
-                            <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' style={{marginTop: '20px', marginLeft: '10px'}}>
+                            <button className=' hover:bg-red-700 text-white font-bold' style={{marginTop: '20px', marginLeft: '10px'}}>
                               Eliminar
                             </button>
                         </td>

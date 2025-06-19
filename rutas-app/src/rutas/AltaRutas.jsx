@@ -16,29 +16,29 @@ export default function AltaRutas() {
             <h1>Alta de Rutas</h1>
         </div>
         <div className=' container text-justify text-1xl p-2 border-4 border-gray-500' style={{marginTop: '20px'}} >
-            <h3 className='p-2'>RUTAS</h3>
+            <h3 className='p-2'>RUTAS:</h3>
             <ComboBox 
             options={cities}
             label="SELECCIONA UNA RUTA"
             />
-            <h3 className='p-2'>NOMBRE</h3>
+            <h3 className='p-2'>NOMBRE:</h3>
             <BasicTextFields
             label="INGRESA EL NOMBRE DE LA RUTA"
             />
 
-            <h3 className='p-2'>Servicio</h3>
+            <h3 className='p-2'>SERVICIO:</h3>
             <ComboBox 
             options={tipoServicio}
             label="SELECCIONA UN TIPO DE SERVICIO"
             />
 
-            <h3 className='p-2'>Chofer</h3>
+            <h3 className='p-2'>CHOFER:</h3>
             <ComboBox 
             options={chofer}
             label="SELECCIONA UN CHOFER"
             />
 
-            <h3 className='p-2'>CAPACIDAD</h3>
+            <h3 className='p-2'>CAPACIDAD:</h3>
             <BasicTextFields
             label="INGRESA LA CAPACIDAD DEL VEHICULO"
             />
