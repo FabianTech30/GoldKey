@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    List<Employee> findByCityAndActiveTrue(City city);
+    List<Employee> findByCityIdAndActiveTrue(Long cityId);
     boolean existsByIdAndRoutesNotEmpty(Long employeeId);
 }

@@ -18,7 +18,7 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     public List<Employee> getActiveEmployeesByCity(City city) {
-        return employeeRepository.findByCityAndActiveTrue(city);
+        return employeeRepository.findByCityIdAndActiveTrue(city.getId());
     }
 
     @Transactional

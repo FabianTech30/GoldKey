@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/employees")
@@ -22,15 +21,6 @@ public class EmployeeController {
 
     @Autowired
     private CityService cityService;
-
-    @GetMapping("/city/{cityId}")
-    public List<Employee> getActiveEmployeesByCity(@PathVariable Long cityId) {
-        City city = cityService.getCityById(cityId);
-        if (city == null) {
-            throw new IllegalArgumentException("City not found");
-        }
-        return employeeService.getActiveEmployeesByCity(city);
-    }
 
     @PostMapping
     public ResponseEntity<Employee> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
@@ -45,7 +35,8 @@ public class EmployeeController {
                 employeeDTO.getMotherLastName(),
                 employeeDTO.getBirthDate(),
                 employeeDTO.getSalary(),
-                city
+                city,
+                true
         );
 
         Employee savedEmployee = employeeService.createEmployee(employee);

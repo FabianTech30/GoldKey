@@ -32,7 +32,7 @@ public class Employee {
     private Double salary;
 
     @Column(nullable = false)
-    private Boolean active = true;
+    private Boolean active;
 
     @ManyToOne
     @JoinColumn(name = "city_id", nullable = false)
@@ -45,13 +45,15 @@ public class Employee {
     public Employee() {}
 
     public Employee(String firstName, String lastName, String motherLastName,
-                    LocalDate birthDate, Double salary, City city) {
+                    LocalDate birthDate, Double salary, City city, boolean active) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.motherLastName = motherLastName;
         this.birthDate = birthDate;
         this.salary = salary;
         this.city = city;
+        this.active = active;
+
     }
 
 }
