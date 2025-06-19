@@ -8,10 +8,10 @@ import chofer from '../components/Chofer';
 export default function BusquedaEmpleados() {
   return (
     <div className='container' style={{marginLeft: '100px', marginRight: '100px'}}>
-        <div className='container text-center text-4xl bg-gray-500 text-white' style={{marginTop: '10px'}}>
-            <h1>Busqueda de Empleados</h1>
+        <div className='container text-center text-4xl text-black' style={{marginTop: '10px'}}>
+            <h1 className='font-bold'>BUSQUEDA DE EMPLEADOS</h1>
         </div>
-        <div className='container dark:bg-gray-800text-justify text-1xl p-2 border-4 border-gray-500' style={{marginTop: '20px'}} >
+        <div className='container dark:bg-gray-800text-justify text-1xl' style={{marginTop: '20px'}} >
             <h3 className='p-2'>CIUDAD</h3>
             <ComboBox 
             options={cities}
@@ -22,8 +22,8 @@ export default function BusquedaEmpleados() {
               </a>
             <div className='flex justify-between items-center' style={{marginTop: '20px'}}>
               <h3 className='text-3xl'>RUTAS POR CIUDAD</h3>
-              <a href="/" className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' style={{marginTop: '20px'}}>
-                    Agregar Ruta
+              <a href="/alta-empleados" className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' style={{marginTop: '20px'}}>
+                    Nuevo Empleado
               </a>
             </div>
             
@@ -32,16 +32,22 @@ export default function BusquedaEmpleados() {
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">
-                            ID ruta
+                            ID Empleado
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Nombre Ruta
+                            Nombre
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Tipo
+                            Ap. paterno
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Capacidad
+                            Ap. materno
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Fecha de nacimiento
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Sueldo
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Modificar
@@ -64,6 +70,12 @@ export default function BusquedaEmpleados() {
                         </td>
                         <td class="px-6 py-4">
                             15
+                        </td>
+                        <td class="px-6 py-4">
+                            30-07-2002
+                        </td>
+                        <td class="px-6 py-4">
+                            $20000
                         </td>
                         <td class="px-6 py-4">
                             <button className='hover:bg-blue-700 text-white font-bold' style={{marginTop: '20px'}}>

@@ -12,10 +12,10 @@ import chofer from '../components/Chofer';
 export default function AltaRutas() {
   return (
     <div className='container' style={{marginLeft: '100px', marginRight: '100px'}}>
-        <div className='container text-center text-4xl bg-gray-500 text-white' style={{marginTop: '10px'}}>
-            <h1>Alta de Rutas</h1>
-        </div>
-        <div className=' container text-justify text-1xl p-2 border-4 border-gray-500' style={{marginTop: '20px'}} >
+        <div className='container text-center text-4xl text-black' style={{marginTop: '10px'}}>
+            <h1 className='font-bold'>ALTA DE RUTAS</h1>
+        </div >
+        <div className=' container text-justify text-1xl' style={{marginTop: '20px'}} >
             <h3 className='p-2'>RUTAS:</h3>
             <ComboBox 
             options={cities}
@@ -42,13 +42,13 @@ export default function AltaRutas() {
             <BasicTextFields
             label="INGRESA LA CAPACIDAD DEL VEHICULO"
             />
-            <div>
-                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' style={{marginTop: '20px'}}>
+            <div className='flex justify-between items-center' style={{marginTop: '20px'}}>
+                <a className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' style={{marginTop: '20px'}}>
                     Guardar
-                </button>
-                <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' style={{marginTop: '20px', marginLeft: '10px'}}>
+                </a>
+                <a href="busqueda" className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' style={{marginTop: '20px', marginLeft: '10px'}}>
                     Cancelar
-                </button>
+                </a>
             </div>
         </div>
     </div>

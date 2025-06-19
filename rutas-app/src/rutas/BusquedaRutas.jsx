@@ -9,10 +9,10 @@ import chofer from '../components/Chofer';
 export default function BusquedaRutas() {
   return (
         <div className='container' style={{marginLeft: '100px', marginRight: '100px'}}>
-        <div className='container text-center text-4xl bg-gray-500 text-white' style={{marginTop: '10px'}}>
-            <h1>Busqueda de Rutas</h1>
+        <div className='container text-center text-4xl  text-black' style={{marginTop: '10px'}}>
+            <h1 className='font-bold'>BUSQUEDA DE RUTAS</h1>
         </div>
-         <div className='container dark:bg-gray-800text-justify text-1xl p-2 border-4 border-gray-500' style={{marginTop: '20px'}} >
+         <div className='container dark:bg-gray-800text-justify text-1xl' style={{marginTop: '20px'}} >
             <h3 className='p-2'>CIUDAD</h3>
             <ComboBox 
             options={cities}
