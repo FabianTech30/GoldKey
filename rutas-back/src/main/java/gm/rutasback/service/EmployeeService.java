@@ -4,7 +4,6 @@ package gm.rutasback.service;
 import gm.rutasback.model.City;
 import gm.rutasback.model.Employee;
 import gm.rutasback.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,8 +13,16 @@ import java.util.List;
 
 @Service
 public class EmployeeService {
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
+
+    public EmployeeService(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
+
+    public Employee findEmployeeById(Long id) {
+        return employeeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Empleado no encontrado"));
+    }
 
     public List<Employee> getActiveEmployeesByCity(City city) {
         return employeeRepository.findByCityIdAndActiveTrue(city.getId());

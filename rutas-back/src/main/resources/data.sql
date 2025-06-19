@@ -16,10 +16,10 @@ VALUES ('Carlos', 'Ramírez', 'Sánchez', '1988-03-10', 12500.00, true, 2);
 
 -- Routes
 INSERT INTO routes (name, type, capacity, city_id, driver_id)
-VALUES ('Ruta 1', 'PERSONNEL', 30, 1, 1);
+VALUES ('Ruta 1', 'PERSONAL', 30, 1, 1);
 
 INSERT INTO routes (name, type, capacity, city_id, driver_id)
 VALUES ('Ruta 2', 'ITEMS', 80, 1, 2);
 
 INSERT INTO routes (name, type, capacity, city_id, driver_id)
-VALUES ('Ruta A', 'PERSONNEL', 25, 2, 3);
+VALUES ('Ruta A', 'PERSONAL', 25, 2, 3);

@@ -1,60 +1,79 @@
 package gm.rutasback.controller;
 
-import gm.rutasback.dto.EmployeeDTO;
+import gm.rutasback.dto.CreateEmployeeRequestDTO;
+import gm.rutasback.dto.CreateEmployeeResponseDTO;
+import gm.rutasback.dto.UpdateEmployeeResponseDTO;
 import gm.rutasback.model.City;
 import gm.rutasback.model.Employee;
 import gm.rutasback.service.CityService;
 import gm.rutasback.service.EmployeeService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
-    @Autowired
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
-    @Autowired
-    private CityService cityService;
+    private final CityService cityService;
+
+    public EmployeeController(EmployeeService employeeService, CityService cityService) {
+        this.employeeService = employeeService;
+        this.cityService = cityService;
+    }
 
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
-        City city = cityService.getCityById(employeeDTO.getCityId());
+    public ResponseEntity<CreateEmployeeResponseDTO> createEmployee(@Valid @RequestBody CreateEmployeeRequestDTO createEmployeeRequestDTO) {
+        City city = cityService.getCityById(createEmployeeRequestDTO.getCityId());
         if (city == null) {
             throw new IllegalArgumentException("City not found");
         }
 
         Employee employee = new Employee(
-                employeeDTO.getFirstName(),
-                employeeDTO.getLastName(),
-                employeeDTO.getMotherLastName(),
-                employeeDTO.getBirthDate(),
-                employeeDTO.getSalary(),
+                createEmployeeRequestDTO.getFirstName(),
+                createEmployeeRequestDTO.getLastName(),
+                createEmployeeRequestDTO.getMotherLastName(),
+                createEmployeeRequestDTO.getBirthDate(),
+                createEmployeeRequestDTO.getSalary(),
                 city,
                 true
         );
 
         Employee savedEmployee = employeeService.createEmployee(employee);
-        return ResponseEntity.created(URI.create("/api/employees/" + savedEmployee.getId()))
-                .body(savedEmployee);
+        return ResponseEntity.ok(new CreateEmployeeResponseDTO(
+                savedEmployee.getId(),
+                savedEmployee.getFirstName(),
+                savedEmployee.getLastName(),
+                savedEmployee.getMotherLastName(),
+                savedEmployee.getBirthDate(),
+                savedEmployee.getSalary(),
+                savedEmployee.getActive()
+        ));
     }
 
     @PutMapping("/{id}")
-    public Employee updateEmployee(
+    public ResponseEntity<UpdateEmployeeResponseDTO> updateEmployee(
             @PathVariable Long id,
             @RequestParam LocalDate birthDate,
             @RequestParam Double salary) {
-        return employeeService.updateEmployee(id, birthDate, salary);
+        Employee employee = employeeService.updateEmployee(id, birthDate, salary);
+        return ResponseEntity.ok(new UpdateEmployeeResponseDTO(
+                employee.getId(),
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getMotherLastName(),
+                employee.getBirthDate(),
+                employee.getSalary(),
+                employee.getActive()
+        ));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
 }

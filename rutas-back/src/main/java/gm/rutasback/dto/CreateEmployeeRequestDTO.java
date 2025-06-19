@@ -7,9 +7,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class EmployeeDTO {
-    private Long id;
-
+public class CreateEmployeeRequestDTO {
     @NotBlank(message = "First name is required")
     @Size(max = 15, message = "First name cannot exceed 15 characters")
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "First name can only contain letters")

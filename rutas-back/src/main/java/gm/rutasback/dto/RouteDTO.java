@@ -25,5 +25,4 @@ public class RouteDTO {
 
     @NotNull(message = "Driver ID is required")
     private Long driverId;
-
 }

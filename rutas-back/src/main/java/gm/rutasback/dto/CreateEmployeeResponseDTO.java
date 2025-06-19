@@ -5,9 +5,9 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
-@Getter
 @AllArgsConstructor
-public class GetEmployeesByCityIdEmployeeResponseDTO {
+@Getter
+public class CreateEmployeeResponseDTO {
     private Long id;
     private String firstName;
     private String lastName;

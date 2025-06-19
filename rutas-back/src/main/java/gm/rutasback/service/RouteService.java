@@ -5,7 +5,6 @@ import gm.rutasback.model.Employee;
 import gm.rutasback.model.Route;
 import gm.rutasback.model.RouteType;
 import gm.rutasback.repository.RouteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,11 +12,14 @@ import java.util.List;
 
 @Service
 public class RouteService {
-    @Autowired
-    private RouteRepository routeRepository;
+    private final RouteRepository routeRepository;
 
-    @Autowired
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
+
+    public RouteService(RouteRepository routeRepository, EmployeeService employeeService) {
+        this.routeRepository = routeRepository;
+        this.employeeService = employeeService;
+    }
 
     public List<Route> getRoutesByCity(City city) {
         return routeRepository.findByCity(city);

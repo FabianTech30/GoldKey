@@ -2,10 +2,12 @@ package gm.rutasback.controller;
 
 import gm.rutasback.dto.GetAllCitiesCityResponseDTO;
 import gm.rutasback.dto.GetEmployeesByCityIdEmployeeResponseDTO;
+import gm.rutasback.dto.GetRoutesByCityIdRouteResponseDTO;
 import gm.rutasback.model.City;
 import gm.rutasback.model.Employee;
 import gm.rutasback.service.CityService;
-import org.springframework.beans.factory.annotation.Autowired;
+import gm.rutasback.service.RouteService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,31 +18,58 @@ import java.util.List;
 @RestController
 @RequestMapping("/cities")
 public class CityController {
-    @Autowired
-    private CityService cityService;
+    private final CityService cityService;
+
+    private final RouteService routeService;
+
+    public CityController(CityService cityService, RouteService routeService) {
+        this.cityService = cityService;
+        this.routeService = routeService;
+    }
 
     @GetMapping
-    public List<GetAllCitiesCityResponseDTO> getAllCities() {
-        return cityService.getAllCities()
+    public ResponseEntity<List<GetAllCitiesCityResponseDTO>> getAllCities() {
+        List<GetAllCitiesCityResponseDTO> cities = cityService.getAllCities()
                 .stream()
                 .map(city -> new GetAllCitiesCityResponseDTO(city.getId(), city.getName()))
                 .toList();
+
+        return ResponseEntity.ok(cities);
     }
 
     @GetMapping("/{id}")
-    public GetAllCitiesCityResponseDTO getCityById(@PathVariable Long id) {
+    public ResponseEntity<GetAllCitiesCityResponseDTO> getCityById(@PathVariable Long id) {
         City city = cityService.getCityById(id);
-        return new GetAllCitiesCityResponseDTO(city.getId(), city.getName());
+
+        return ResponseEntity.ok(new GetAllCitiesCityResponseDTO(city.getId(), city.getName()));
     }
 
     @GetMapping("/{id}/employees")
-    public List<GetEmployeesByCityIdEmployeeResponseDTO> getEmployeesByCityId(@PathVariable Long id) {
-        return cityService.getCityById(id).getEmployees()
+    public ResponseEntity<List<GetEmployeesByCityIdEmployeeResponseDTO>> getEmployeesByCityId(@PathVariable Long id) {
+        return ResponseEntity.ok(cityService.getCityById(id).getEmployees()
                 .stream()
                 .filter(Employee::getActive)
                 .map(employee -> new GetEmployeesByCityIdEmployeeResponseDTO(employee.getId(), employee.getFirstName(), employee.getLastName(), employee.getMotherLastName(), employee.getBirthDate(), employee.getSalary(), employee.getActive()))
-                .toList();
-
+                .toList());
     }
 
+    @GetMapping("/{id}/routes")
+    public ResponseEntity<List<GetRoutesByCityIdRouteResponseDTO>> getRoutesByCityId(@PathVariable Long id) {
+        City city = cityService.getCityById(id);
+
+        if (city == null) {
+            throw new IllegalArgumentException("City not found");
+        }
+
+        return ResponseEntity.ok(
+                routeService.getRoutesByCity(city).stream().map(
+                        route -> new GetRoutesByCityIdRouteResponseDTO(
+                                route.getId(),
+                                route.getName(),
+                                route.getType(),
+                                route.getCapacity()
+                        )
+                ).toList()
+        );
+    }
 }

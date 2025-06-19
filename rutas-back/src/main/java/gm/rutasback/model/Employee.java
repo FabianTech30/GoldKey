@@ -6,7 +6,6 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "employees")
@@ -42,10 +41,11 @@ public class Employee {
     private List<Route> routes;
 
     // Constructors, getters, setters
-    public Employee() {}
+    public Employee() {
+    }
 
     public Employee(String firstName, String lastName, String motherLastName,
-                    LocalDate birthDate, Double salary, City city, boolean active) {
+                    LocalDate birthDate, Double salary, City city, Boolean active) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.motherLastName = motherLastName;
@@ -53,7 +53,5 @@ public class Employee {
         this.salary = salary;
         this.city = city;
         this.active = active;
-
     }
-
 }

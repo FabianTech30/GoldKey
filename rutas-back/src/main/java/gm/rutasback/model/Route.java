@@ -30,7 +30,8 @@ public class Route {
     private Employee driver;
 
     // Constructors, getters, setters
-    public Route() {}
+    public Route() {
+    }
 
     public Route(String name, RouteType type, Integer capacity, City city, Employee driver) {
         this.name = name;

@@ -23,7 +23,8 @@ public class City {
     private List<Route> routes;
 
     // Constructors, getters, setters
-    public City() {}
+    public City() {
+    }
 
     public City(String name) {
         this.name = name;
