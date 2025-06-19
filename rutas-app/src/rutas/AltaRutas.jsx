@@ -11,47 +11,77 @@ import chofer from '../components/Chofer';
 
 export default function AltaRutas() {
   return (
-    <div className='container' style={{marginLeft: '100px', marginRight: '100px'}}>
-        <div className='container text-center text-4xl text-black' style={{marginTop: '10px'}}>
-            <h1 className='font-bold'>ALTA DE RUTAS</h1>
-        </div >
-        <div className=' container text-justify text-1xl' style={{marginTop: '20px'}} >
-            <h3 className='p-2'>RUTAS:</h3>
+    <div className='container mx-auto px-4 py-8 max-w-4xl'>
+    {/* Encabezado */}
+    <div className='text-center mb-8'>
+        <h1 className='text-3xl font-bold text-gray-800 mb-2'>ALTA DE RUTAS</h1>
+        <div className='w-20 h-1 bg-blue-500 mx-auto'></div>
+    </div>
+    
+    {/* Formulario */}
+    <div className='bg-white rounded-lg shadow-md p-6'>
+        {/* Campo Ruta */}
+        <div className='mb-6'>
+            <label className='block text-gray-700 font-medium mb-2'>RUTA:</label>
             <ComboBox 
-            options={cities}
-            label="SELECCIONA UNA RUTA"
+                options={cities}
+                label="Selecciona una ruta"
+                className="w-full"
             />
-            <h3 className='p-2'>NOMBRE:</h3>
+        </div>
+        
+        {/* Campo Nombre */}
+        <div className='mb-6'>
+            <label className='block text-gray-700 font-medium mb-2'>NOMBRE:</label>
             <BasicTextFields
-            label="INGRESA EL NOMBRE DE LA RUTA"
+                label="Ingresa el nombre de la ruta"
+                className="w-full"
+                variant="outlined"
             />
-
-            <h3 className='p-2'>SERVICIO:</h3>
+        </div>
+        
+        {/* Campo Servicio */}
+        <div className='mb-6'>
+            <label className='block text-gray-700 font-medium mb-2'>SERVICIO:</label>
             <ComboBox 
-            options={tipoServicio}
-            label="SELECCIONA UN TIPO DE SERVICIO"
+                options={tipoServicio}
+                label="Selecciona un tipo de servicio"
+                className="w-full"
             />
-
-            <h3 className='p-2'>CHOFER:</h3>
+        </div>
+        
+        {/* Campo Chofer */}
+        <div className='mb-6'>
+            <label className='block text-gray-700 font-medium mb-2'>CHOFER:</label>
             <ComboBox 
-            options={chofer}
-            label="SELECCIONA UN CHOFER"
+                options={chofer}
+                label="Selecciona un chofer"
+                className="w-full"
             />
-
-            <h3 className='p-2'>CAPACIDAD:</h3>
+        </div>
+        
+        {/* Campo Capacidad */}
+        <div className='mb-8'>
+            <label className='block text-gray-700 font-medium mb-2'>CAPACIDAD:</label>
             <BasicTextFields
-            label="INGRESA LA CAPACIDAD DEL VEHICULO"
+                label="Ingresa la capacidad del vehículo"
+                className="w-full"
+                variant="outlined"
+                type="number"
             />
-            <div className='flex justify-between items-center' style={{marginTop: '20px'}}>
-                <a className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' style={{marginTop: '20px'}}>
-                    Guardar
-                </a>
-                <a href="busqueda" className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' style={{marginTop: '20px', marginLeft: '10px'}}>
-                    Cancelar
-                </a>
-            </div>
+        </div>
+        
+        {/* Botones */}
+        <div className='flex justify-end space-x-4'>
+            <button className='bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-6 rounded-lg transition duration-200'>
+                Cancelar
+            </button>
+            <button className='bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200 shadow-md'>
+                Guardar Ruta
+            </button>
         </div>
     </div>
+</div>
 
   )
 }

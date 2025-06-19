@@ -7,91 +7,177 @@ import chofer from '../components/Chofer';
 
 export default function BusquedaEmpleados() {
   return (
-    <div className='container' style={{marginLeft: '100px', marginRight: '100px'}}>
-        <div className='container text-center text-4xl text-black' style={{marginTop: '10px'}}>
-            <h1 className='font-bold'>BUSQUEDA DE EMPLEADOS</h1>
-        </div>
-        <div className='container dark:bg-gray-800text-justify text-1xl' style={{marginTop: '20px'}} >
-            <h3 className='p-2'>CIUDAD</h3>
-            <ComboBox 
-            options={cities}
-            label=""
-            />
-            <a href="/busqueda" className='bg-orange-200 hover:bg-blue-700 text-black font-bold ' style={{marginTop: '20px'}}>
-                    Buscar
-              </a>
-            <div className='flex justify-between items-center' style={{marginTop: '20px'}}>
-              <h3 className='text-3xl'>RUTAS POR CIUDAD</h3>
-              <a href="/alta-empleados" className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' style={{marginTop: '20px'}}>
-                    Nuevo Empleado
-              </a>
+    <div className='container mx-auto px-4 py-8 max-w-7xl'>
+            {/* Encabezado */}
+            <div className='text-center mb-8'>
+                <h1 className='text-3xl font-bold text-gray-800'>BUSQUEDA DE EMPLEADOS</h1>
+                <div className='w-24 h-1 bg-orange-500 mx-auto mt-2'></div>
             </div>
-            
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style={{marginTop: '20px'}}>
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+
+            {/* Filtros de búsqueda */}
+            <div className='bg-white rounded-lg shadow-md p-6 mb-8'>
+                <div className='flex flex-col md:flex-row gap-4 items-end'>
+                <div className='flex-1 w-full'>
+                    <label className='block text-gray-700 font-medium mb-2'>CIUDAD</label>
+                    <ComboBox 
+                    options={cities}
+                    label=""
+                    className="w-full"
+                    />
+                </div>
+                <button className='bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-6 rounded transition duration-200 w-full md:w-auto'>
+                    Buscar Empleados
+                </button>
+                </div>
+            </div>
+
+            {/* Encabezado de tabla y botón */}
+            <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4'>
+                <h2 className='text-2xl font-semibold text-gray-800 mb-4 sm:mb-0'>LISTA DE EMPLEADOS</h2>
+                <a href="/alta-empleados" className='bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 flex items-center'>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                </svg>
+                Nuevo Empleado
+                </a>
+            </div>
+
+            {/* Tabla de empleados */}
+            <div className="bg-white rounded-lg shadow overflow-hidden">
+                <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
                     <tr>
-                        <th scope="col" class="px-6 py-3">
-                            ID Empleado
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        ID Empleado
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Nombre
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Nombre
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Ap. paterno
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Ap. Paterno
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Ap. materno
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Ap. Materno
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Fecha de nacimiento
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Fecha Nacimiento
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Sueldo
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Sueldo
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            Modificar
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Eliminar
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Acciones
                         </th>
                     </tr>
-                </thead>
-                <tbody>
-                    <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            1
-                        </th>
-                        <td class="px-6 py-4">
-                            Ruta Culiacan 2
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tr className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        1
                         </td>
-                        <td class="px-6 py-4">
-                            Articulo
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        Juan
                         </td>
-                        <td class="px-6 py-4">
-                            15
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        Pérez
                         </td>
-                        <td class="px-6 py-4">
-                            30-07-2002
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        López
                         </td>
-                        <td class="px-6 py-4">
-                            $20000
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        30-07-2002
                         </td>
-                        <td class="px-6 py-4">
-                            <button className='hover:bg-blue-700 text-white font-bold' style={{marginTop: '20px'}}>
-                              Editar
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        $20,000
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
+                            <button className="text-blue-600 hover:text-blue-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                            </svg>
                             </button>
-                        </td>
-                        <td class="px-6 py-4">
-                            <button className=' hover:bg-red-700 text-white font-bold' style={{marginTop: '20px', marginLeft: '10px'}}>
-                              Eliminar
+                            <button className="text-red-600 hover:text-red-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
                             </button>
+                        </div>
                         </td>
                     </tr>
-                </tbody>
-            </table>
-        </div>
-        </div>
-    </div>
+                    {/* Ejemplo de fila adicional para mostrar el diseño */}
+                    <tr className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        2
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        María
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        García
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        Hernández
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        15-03-1995
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        $22,500
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
+                            <button className="text-blue-600 hover:text-blue-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                            </svg>
+                            </button>
+                            <button className="text-red-600 hover:text-red-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                            </button>
+                        </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+                
+                {/* Paginación */}
+                <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                    <p className="text-sm text-gray-700">
+                        Mostrando <span className="font-medium">1</span> a <span className="font-medium">2</span> de <span className="font-medium">2</span> resultados
+                    </p>
+                    </div>
+                    <div>
+                    <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        <a href="#" className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <span className="sr-only">Anterior</span>
+                        <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                        </a>
+                        <a href="#" aria-current="page" className="z-10 bg-orange-50 border-orange-500 text-orange-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                        1
+                        </a>
+                        <a href="#" className="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                        2
+                        </a>
+                        <a href="#" className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <span className="sr-only">Siguiente</span>
+                        <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                        </svg>
+                        </a>
+                    </nav>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
   )
 }

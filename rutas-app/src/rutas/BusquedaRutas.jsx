@@ -8,80 +8,136 @@ import chofer from '../components/Chofer';
 
 export default function BusquedaRutas() {
   return (
-        <div className='container' style={{marginLeft: '100px', marginRight: '100px'}}>
-        <div className='container text-center text-4xl  text-black' style={{marginTop: '10px'}}>
-            <h1 className='font-bold'>BUSQUEDA DE RUTAS</h1>
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
+    {/* Encabezado */}
+        <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">BUSQUEDA DE RUTAS</h1>
+            <div className="w-24 h-1 bg-orange-500 mx-auto rounded-full"></div>
         </div>
-         <div className='container dark:bg-gray-800text-justify text-1xl' style={{marginTop: '20px'}} >
-            <h3 className='p-2'>CIUDAD</h3>
-            <ComboBox 
-            options={cities}
-            label=""
-            />
-            <a href="/busqueda" className='bg-orange-200 hover:bg-blue-700 text-black font-bold ' style={{marginTop: '20px'}}>
-                    Buscar
-              </a>
-            <div className='flex justify-between items-center' style={{marginTop: '20px'}}>
-              <h3 className='text-3xl'>RUTAS POR CIUDAD</h3>
-              <a href="/" className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' style={{marginTop: '20px'}}>
-                    Agregar Ruta
-              </a>
+
+        {/* Contenedor principal */}
+        <div className="bg-white rounded-xl shadow-md overflow-hidden p-6">
+            {/* Barra de búsqueda */}
+            <div className="flex flex-col md:flex-row gap-4 mb-8 items-end">
+            <div className="flex-1 w-full">
+                <label className="block text-gray-700 font-medium mb-2">CIUDAD</label>
+                <div className="flex gap-4">
+                <ComboBox 
+                    options={cities}
+                    label="Selecciona una ciudad"
+                    className="flex-1"
+                />
+                <button className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-6 rounded-lg transition duration-200 shadow-md whitespace-nowrap">
+                    Buscar Rutas
+                </button>
+                </div>
             </div>
-            
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg" style={{marginTop: '20px'}}>
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            ID ruta
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Nombre Ruta
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Tipo
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Capacidad
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Modificar
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Eliminar
-                        </th>
-                    </tr>
+            </div>
+
+            {/* Sección de resultados */}
+            <div className="mb-6 flex justify-between items-center">
+            <h2 className="text-2xl font-semibold text-gray-800">RUTAS POR CIUDAD</h2>
+            <a 
+                href="/" 
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                </svg>
+                Agregar Ruta
+            </a>
+            </div>
+
+            {/* Tabla de resultados */}
+            <div className="relative overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+            <table className="w-full text-sm text-left text-gray-700">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-100">
+                <tr>
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                    ID Ruta
+                    </th>
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                    Nombre Ruta
+                    </th>
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                    Tipo
+                    </th>
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                    Capacidad
+                    </th>
+                    <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                    Acciones
+                    </th>
+                </tr>
                 </thead>
-                <tbody>
-                    <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            1
-                        </th>
-                        <td class="px-6 py-4">
-                            Ruta Culiacan 2
-                        </td>
-                        <td class="px-6 py-4">
-                            Articulo
-                        </td>
-                        <td class="px-6 py-4">
-                            15
-                        </td>
-                        <td class="px-6 py-4">
-                            <button className='hover:bg-blue-700 text-white font-bold' style={{marginTop: '20px'}}>
-                              Editar
-                            </button>
-                        </td>
-                        <td class="px-6 py-4">
-                            <button className=' hover:bg-red-700 text-white font-bold' style={{marginTop: '20px', marginLeft: '10px'}}>
-                              Eliminar
-                            </button>
-                        </td>
-                    </tr>
+                <tbody className="divide-y divide-gray-200">
+                <tr className="hover:bg-gray-50">
+                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    1
+                    </td>
+                    <td className="px-6 py-4">
+                    Ruta Culiacan 2
+                    </td>
+                    <td className="px-6 py-4">
+                    Articulo
+                    </td>
+                    <td className="px-6 py-4">
+                    15
+                    </td>
+                    <td className="px-6 py-4 flex gap-2">
+                    <button className="text-blue-600 hover:text-blue-800 font-medium px-3 py-1 rounded-md hover:bg-blue-50 transition duration-200">
+                        Editar
+                    </button>
+                    <button className="text-red-600 hover:text-red-800 font-medium px-3 py-1 rounded-md hover:bg-red-50 transition duration-200">
+                        Eliminar
+                    </button>
+                    </td>
+                </tr>
+                {/* Ejemplo de fila adicional */}
+                <tr className="hover:bg-gray-50">
+                    <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                    2
+                    </td>
+                    <td className="px-6 py-4">
+                    Ruta Mazatlán
+                    </td>
+                    <td className="px-6 py-4">
+                    Pasajeros
+                    </td>
+                    <td className="px-6 py-4">
+                    24
+                    </td>
+                    <td className="px-6 py-4 flex gap-2">
+                    <button className="text-blue-600 hover:text-blue-800 font-medium px-3 py-1 rounded-md hover:bg-blue-50 transition duration-200">
+                        Editar
+                    </button>
+                    <button className="text-red-600 hover:text-red-800 font-medium px-3 py-1 rounded-md hover:bg-red-50 transition duration-200">
+                        Eliminar
+                    </button>
+                    </td>
+                </tr>
                 </tbody>
             </table>
+            </div>
+
+            {/* Paginación (opcional) */}
+            <div className="flex justify-between items-center mt-6">
+            <div className="text-sm text-gray-600">
+                Mostrando 1 al 2 de 2 resultados
+            </div>
+            <div className="flex gap-2">
+                <button className="px-3 py-1 border rounded-md text-gray-700 hover:bg-gray-100">
+                Anterior
+                </button>
+                <button className="px-3 py-1 border rounded-md bg-blue-600 text-white">
+                1
+                </button>
+                <button className="px-3 py-1 border rounded-md text-gray-700 hover:bg-gray-100">
+                Siguiente
+                </button>
+            </div>
+            </div>
         </div>
-      </div>
     </div>
-    
   )
 }
