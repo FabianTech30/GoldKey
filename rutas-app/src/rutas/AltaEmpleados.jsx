@@ -3,13 +3,22 @@ import { Autocomplete, Box, Button, Card, TextField } from "@mui/material";
 import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import cities from "../components/Cities";
+import cities from "../components/cities";
 
 const formSchema = z.object({
   city: z.string().min(1, "Ciudad es requerida"),
-  firstName: z.string().min(1, "Nombre es requerido"),
-  lastName: z.string().min(1, "Apellido Paterno es requerido"),
-  middleName: z.string().min(1, "Apellido Materno es requerido"),
+  firstName: z
+    .string()
+    .min(1, "Nombre es requerido")
+    .regex(/^[a-zA-ZñÑ]+$/, "Nombre solo puede contener letras y espacios"),
+  lastName: z
+    .string()
+    .min(1, "Apellido Paterno es requerido")
+    .regex(/^[a-zA-ZñÑ]+$/, "Nombre solo puede contener letras y espacios"),
+  middleName: z
+    .string()
+    .min(1, "Apellido Materno es requerido")
+    .regex(/^[a-zA-ZñÑ]+$/, "Nombre solo puede contener letras y espacios"),
   birthDate: z
     .date({
       message: "Fecha de Nacimiento es requerida",
@@ -37,6 +46,8 @@ export default function AltaEmpleados({ onClose }) {
     register,
     formState: { errors },
     reset,
+    setValue,
+    watch,
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -48,6 +59,8 @@ export default function AltaEmpleados({ onClose }) {
       salary: 0,
     },
   });
+
+  const formValues = watch();
 
   return (
     <Card className="w-4xl mx-auto px-6 py-8 shadow-lg overflow-y-scroll">
@@ -63,6 +76,14 @@ export default function AltaEmpleados({ onClose }) {
           ALTA DE EMPLEADOS
         </h1>
         <Autocomplete
+          value={cities.find((c) => c.label === formValues.city) ?? null}
+          onChange={(_, newValue) => {
+            setValue("city", newValue?.label ?? "", {
+              shouldValidate: true,
+            });
+          }}
+          getOptionLabel={(option) => option.label}
+          getOptionKey={(option) => option.id}
           options={cities}
           renderInput={(params) => (
             <TextField

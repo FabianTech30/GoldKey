@@ -1,9 +1,10 @@
 import ComboBox from "../components/combobox";
-import cities from "../components/Cities";
+import cities from "../components/cities";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import { Modal } from "@mui/material";
 import AltaEmpleados from "./AltaEmpleados";
+import AltaRutas from "./AltaRutas";
 
 export default function BusquedaRutas() {
   const [isAddRouteOpen, setIsAddRouteOpen] = useState(false);
@@ -117,7 +118,7 @@ export default function BusquedaRutas() {
         open={isAddRouteOpen}
         onClose={() => setIsAddRouteOpen(false)}
       >
-        <AltaEmpleados onClose={() => setIsAddRouteOpen(false)} />
+        <AltaRutas onClose={() => setIsAddRouteOpen(false)} />
       </Modal>
     </div>
   );

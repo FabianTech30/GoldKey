@@ -1,75 +1,198 @@
-import ComboBox from "../components/combobox";
+import { Autocomplete, Box, Button, Card, TextField } from "@mui/material";
 import BasicTextFields from "../components/BasicTextField";
-import cities from "../components/Cities";
-import tipoServicio from "../components/TipoServicio";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import cities from "../components/cities";
 import chofer from "../components/Chofer";
+import tipoServicio from "../components/TipoServicio";
 
-export default function AltaRutas() {
+const formSchema = z
+  .object({
+    cityId: z.number({
+      message: "Ciudad es requerida",
+    }),
+    name: z
+      .string()
+      .min(1, "Nombre es requerido")
+      .regex(/^[a-zA-ZñÑ]+$/, "Nombre solo puede contener letras y espacios"),
+    serviceType: z.enum(["PERSONAL", "ITEMS"], {
+      message: "Tipo de servicio es requerido",
+    }),
+    driverId: z.number({
+      message: "Chofer es requerido",
+    }),
+    capacity: z
+      .number({
+        message: "Capacidad es requerida",
+      })
+      .gt(0, "Capacidad debe ser mayor a 0"),
+  })
+  .superRefine((data, ctx) => {
+    if (data.serviceType === "ITEMS") {
+      if (data.capacity > 100) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Capacidad para servicio personal no puede ser mayor a 100",
+          path: ["capacity"],
+        });
+      }
+    }
+
+    if (data.serviceType === "PERSONAL") {
+      if (data.capacity > 34) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "Capacidad para servicio de articulos no puede ser mayor a 34",
+          path: ["capacity"],
+        });
+      }
+    }
+  });
+
+export default function AltaRutas({ onClose }) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+    watch,
+  } = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      cityId: null,
+      name: "",
+      serviceType: null,
+      driverId: null,
+      capacity: 0,
+    },
+  });
+
+  const formValues = watch();
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">ALTA DE RUTAS</h1>
-        <div className="w-20 h-1 bg-blue-500 mx-auto"></div>
-      </div>
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="mb-6">
-          <label className="block text-gray-700 font-medium mb-2">RUTA:</label>
-          <ComboBox
-            options={cities}
-            label="Selecciona una ruta"
-            className="w-full"
-          />
-        </div>
-        <div className="mb-6">
-          <label className="block text-gray-700 font-medium mb-2">
-            NOMBRE:
-          </label>
-          <BasicTextFields
-            label="Ingresa el nombre de la ruta"
-            className="w-full"
+    <Card
+      component="form"
+      sx={{
+        maxWidth: "600px",
+        margin: "auto",
+        padding: 8,
+        display: "flex",
+        flexDirection: "column",
+        gap: 4,
+      }}
+      onSubmit={handleSubmit((data) => {
+        console.log("Form submitted with data:", data);
+        reset();
+        // onClose();
+      })}
+    >
+      <h1 className="text-3xl font-bold text-gray-800 text-center">
+        ALTA DE RUTAS
+      </h1>
+      <Autocomplete
+        value={cities.find((c) => c.id === formValues.cityId) ?? null}
+        onChange={(_, value) => {
+          setValue("cityId", value?.id || null, {
+            shouldValidate: true,
+          });
+        }}
+        options={cities}
+        getOptionLabel={(option) => option.label}
+        getOptionKey={(option) => option.id}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Selecciona una ciudad"
             variant="outlined"
+            error={!!errors.cityId}
+            helperText={errors.cityId?.message}
           />
-        </div>
-        <div className="mb-6">
-          <label className="block text-gray-700 font-medium mb-2">
-            SERVICIO:
-          </label>
-          <ComboBox
-            options={tipoServicio}
+        )}
+      />
+      <TextField
+        label="Ingresa el nombre de la ruta"
+        variant="outlined"
+        error={!!errors.name}
+        helperText={errors.name?.message}
+        {...register("name")}
+        fullWidth
+      />
+      <Autocomplete
+        value={
+          tipoServicio.find((t) => t.id === formValues.serviceType) ?? null
+        }
+        options={tipoServicio}
+        getOptionLabel={(option) => option.label}
+        getOptionKey={(option) => option.id}
+        onChange={(_, value) => {
+          // @ts-ignore
+          setValue("serviceType", value?.id || null, {
+            shouldValidate: true,
+          });
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
             label="Selecciona un tipo de servicio"
-            className="w-full"
-          />
-        </div>
-        <div className="mb-6">
-          <label className="block text-gray-700 font-medium mb-2">
-            CHOFER:
-          </label>
-          <ComboBox
-            options={chofer}
-            label="Selecciona un chofer"
-            className="w-full"
-          />
-        </div>
-        <div className="mb-8">
-          <label className="block text-gray-700 font-medium mb-2">
-            CAPACIDAD:
-          </label>
-          <BasicTextFields
-            label="Ingresa la capacidad del vehículo"
-            className="w-full"
             variant="outlined"
-            type="number"
+            error={!!errors.serviceType}
+            helperText={errors.serviceType?.message}
           />
-        </div>
-        <div className="flex justify-end space-x-4">
-          <button className="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-6 rounded-lg transition duration-200">
-            Cancelar
-          </button>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200 shadow-md">
-            Guardar Ruta
-          </button>
-        </div>
-      </div>
-    </div>
+        )}
+      />
+      <Autocomplete
+        value={chofer.find((c) => c.id === formValues.driverId) ?? null}
+        options={chofer}
+        onChange={(_, value) => {
+          setValue("driverId", value?.id || null, {
+            shouldValidate: true,
+          });
+        }}
+        getOptionLabel={(option) => option.label}
+        getOptionKey={(option) => option.id}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Selecciona un chofer"
+            variant="outlined"
+            error={!!errors.driverId}
+            helperText={errors.driverId?.message}
+          />
+        )}
+      />
+      <TextField
+        label="Capacidad"
+        type="number"
+        variant="outlined"
+        error={!!errors.capacity}
+        helperText={errors.capacity?.message}
+        {...register("capacity", {
+          valueAsNumber: true,
+        })}
+        fullWidth
+        onKeyDown={(e) => {
+          if (["e", "E", "+", "-"].includes(e.key)) {
+            e.preventDefault();
+          }
+        }}
+      />
+      <Box
+        sx={{
+          justifyContent: "end",
+          display: "flex",
+          gap: 2,
+        }}
+      >
+        <Button variant="contained" type="submit">
+          Guardar
+        </Button>
+        <Button type="button" onClick={onClose}>
+          Cancelar
+        </Button>
+      </Box>
+    </Card>
   );
 }

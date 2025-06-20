@@ -1,5 +1,5 @@
 import ComboBox from "../components/combobox";
-import cities from "../components/Cities";
+import cities from "../components/cities";
 import { useState } from "react";
 import { Button, Modal } from "@mui/material";
 import AltaEmpleados from "./AltaEmpleados";
