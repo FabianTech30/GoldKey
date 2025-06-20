@@ -25,10 +25,6 @@ public class RouteService {
         return routeRepository.findByCity(city);
     }
 
-    public List<Route> searchRoutesByCityAndName(City city, String name) {
-        return routeRepository.findByCityAndNameContainingIgnoreCase(city, name);
-    }
-
     @Transactional
     public Route createRoute(Route route) throws IllegalArgumentException {
         validateRoute(route);

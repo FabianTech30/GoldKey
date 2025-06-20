@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/routes")
 public class RouteController {
@@ -32,14 +33,13 @@ public class RouteController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("/search")
+    @GetMapping("/{id}/routes")
     public ResponseEntity<List<SearchRoutesRouteResponseDTO>> searchRoutes(
-            @RequestParam Long cityId,
-            @RequestParam String name) {
-        City city = cityService.getCityById(cityId);
+            @PathVariable Long id) {
+        City city = cityService.getCityById(id);
 
         return ResponseEntity.ok(
-                routeService.searchRoutesByCityAndName(city, name).stream().map(
+                city.getRoutes().stream().map(
                         route -> new SearchRoutesRouteResponseDTO(
                                 route.getId(),
                                 route.getName(),
