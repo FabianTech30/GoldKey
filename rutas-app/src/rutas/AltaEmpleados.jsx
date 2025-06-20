@@ -4,9 +4,13 @@ import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import cities from "../components/cities";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const formSchema = z.object({
-  city: z.string().min(1, "Ciudad es requerida"),
+  cityId: z.number({
+    message: "Ciudad es requerida",
+  }),
   firstName: z
     .string()
     .min(1, "Nombre es requerido")
@@ -15,7 +19,7 @@ const formSchema = z.object({
     .string()
     .min(1, "Apellido Paterno es requerido")
     .regex(/^[a-zA-ZñÑ]+$/, "Nombre solo puede contener letras y espacios"),
-  middleName: z
+  motherLastName: z
     .string()
     .min(1, "Apellido Materno es requerido")
     .regex(/^[a-zA-ZñÑ]+$/, "Nombre solo puede contener letras y espacios"),
@@ -41,6 +45,7 @@ const formSchema = z.object({
 });
 
 export default function AltaEmpleados({ onClose }) {
+  const [cities, setCities] = useState([]);
   const {
     handleSubmit,
     register,
@@ -51,10 +56,10 @@ export default function AltaEmpleados({ onClose }) {
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      city: "",
+      cityId: null,
       firstName: "",
       lastName: "",
-      middleName: "",
+      motherLastName: "",
       birthDate: null,
       salary: 0,
     },
@@ -62,13 +67,22 @@ export default function AltaEmpleados({ onClose }) {
 
   const formValues = watch();
 
+  useEffect(() => {
+    axios.get("/cities").then((response) => {
+      setCities(response.data);
+    });
+  }, []);
+
   return (
     <Card className="w-4xl mx-auto px-6 py-8 shadow-lg overflow-y-scroll">
       <Box
         className="flex flex-col gap-6 overflow-y-scroll"
         component="form"
-        onSubmit={handleSubmit((data) => {
-          console.log("Form submitted with data:", data);
+        onSubmit={handleSubmit(async (data) => {
+          await axios.post("/employees", {
+            ...data,
+            birthDate: dayjs(data.birthDate).format("YYYY-MM-DD"),
+          });
           reset();
         })}
       >
@@ -76,13 +90,13 @@ export default function AltaEmpleados({ onClose }) {
           ALTA DE EMPLEADOS
         </h1>
         <Autocomplete
-          value={cities.find((c) => c.label === formValues.city) ?? null}
+          value={cities.find((c) => c.label === formValues.cityId) ?? null}
           onChange={(_, newValue) => {
-            setValue("city", newValue?.label ?? "", {
+            setValue("cityId", newValue?.id ?? null, {
               shouldValidate: true,
             });
           }}
-          getOptionLabel={(option) => option.label}
+          getOptionLabel={(option) => option.name}
           getOptionKey={(option) => option.id}
           options={cities}
           renderInput={(params) => (
@@ -90,9 +104,8 @@ export default function AltaEmpleados({ onClose }) {
               {...params}
               label="Ciudad"
               variant="outlined"
-              error={!!errors.city}
-              helperText={errors.city?.message}
-              {...register("city")}
+              error={!!errors.cityId}
+              helperText={errors.cityId?.message}
               fullWidth
             />
           )}
@@ -113,12 +126,11 @@ export default function AltaEmpleados({ onClose }) {
         />
         <TextField
           label="AP. Materno"
-          error={!!errors.middleName}
-          helperText={errors.middleName?.message}
-          {...register("middleName")}
+          error={!!errors.motherLastName}
+          helperText={errors.motherLastName?.message}
+          {...register("motherLastName")}
           fullWidth
         />
-        {/* <DatePicker label="Fecha de Nacimiento" className="w-full" /> */}
         <TextField
           type="date"
           label="Fecha de Nacimiento"

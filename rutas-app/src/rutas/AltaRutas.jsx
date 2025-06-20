@@ -1,12 +1,10 @@
-import { Autocomplete, Box, Button, Card, TextField } from "@mui/material";
-import BasicTextFields from "../components/BasicTextField";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import chofer from "../components/Chofer";
-import tipoServicio from "../components/TipoServicio";
-import { useEffect, useState } from "react";
+import { Autocomplete, Box, Button, Card, TextField } from "@mui/material";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import tipoServicio from "../components/TipoServicio";
 
 const formSchema = z
   .object({
@@ -92,7 +90,6 @@ export default function AltaRutas({ onClose }) {
         gap: 4,
       }}
       onSubmit={handleSubmit(async (data) => {
-        console.log("Form submitted with data:", data);
         await axios.post("/routes", data);
         reset();
       })}
