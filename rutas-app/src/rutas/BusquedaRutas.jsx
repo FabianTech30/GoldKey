@@ -45,6 +45,30 @@ export default function BusquedaRutas() {
     });
   }, []);
 
+  const handleEdit = (id) => {
+    console.log(`Editar ruta con id: ${id}`);
+    // Implementar lógica de edición aquí
+  };
+
+  const handleDelete = (id) => {
+    if (confirm("¿Estás seguro de que deseas eliminar esta ruta?")) {
+      axios
+        .delete(`/routes/${id}`)
+        .then(() => {
+          alert("Ruta eliminada exitosamente");
+          // Actualizar la lista de rutas después de eliminar
+          if (cityId) {
+            axios.get(`/cities/${cityId}/routes`).then((response) => {
+              setRoutes(response.data);
+            });
+          }
+        })
+        .catch(() => {
+          alert("Error al eliminar ruta, ya tiene empleados asignados");
+        });
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="text-center mb-8">
@@ -114,12 +138,20 @@ export default function BusquedaRutas() {
               field: "actions",
               headerName: "Acciones",
               width: 200,
-              renderCell: () => (
+              renderCell: (params) => (
                 <div className="flex gap-2">
-                  <Button variant="outlined" color="primary">
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => handleEdit(params.row.id)}
+                  >
                     Editar
                   </Button>
-                  <Button variant="outlined" color="secondary">
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={() => handleDelete(params.row.id)}
+                  >
                     Eliminar
                   </Button>
                 </div>
@@ -132,6 +164,12 @@ export default function BusquedaRutas() {
             type: route.type,
             capacity: route.capacity,
           }))}
+          autoHeight
+          disableColumnMenu
+          pagination
+          pageSize={10}
+          rowsPerPageOptions={[10, 25, 50]}
+          className="border-none shadow-none"
         />
       </div>
       <Modal
@@ -139,7 +177,17 @@ export default function BusquedaRutas() {
         open={isAddRouteOpen}
         onClose={() => setIsAddRouteOpen(false)}
       >
-        <AltaRutas onClose={() => setIsAddRouteOpen(false)} />
+        <AltaRutas
+          onClose={() => {
+            setIsAddRouteOpen(false);
+            // Actualizar la lista de rutas después de agregar una nueva
+            if (cityId) {
+              axios.get(`/cities/${cityId}/routes`).then((response) => {
+                setRoutes(response.data);
+              });
+            }
+          }}
+        />
       </Modal>
     </div>
   );
