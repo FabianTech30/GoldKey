@@ -36,26 +36,10 @@ export default function Navegacion() {
             <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg bg-blue-700 md:bg-transparent md:flex-row md:space-x-6 rtl:space-x-reverse md:mt-0">
               <li>
                 <Link
-                  to="/"
-                  className="block py-2 px-3 text-white rounded md:rounded-none md:hover:bg-transparent md:border-0 md:hover:text-blue-200 md:p-0 transition-colors duration-200 hover:bg-blue-600 md:hover:scale-105"
-                >
-                  Alta de Rutas
-                </Link>
-              </li>
-              <li>
-                <Link
                   to="/busqueda"
                   className="block py-2 px-3 text-white rounded md:rounded-none md:hover:bg-transparent md:border-0 md:hover:text-blue-200 md:p-0 transition-colors duration-200 hover:bg-blue-600 md:hover:scale-105"
                 >
-                  Búsqueda Rutas
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/alta-empleados"
-                  className="block py-2 px-3 text-white rounded md:rounded-none md:hover:bg-transparent md:border-0 md:hover:text-blue-200 md:p-0 transition-colors duration-200 hover:bg-blue-600 md:hover:scale-105"
-                >
-                  Alta Empleados
+                  Rutas
                 </Link>
               </li>
               <li>
@@ -63,7 +47,7 @@ export default function Navegacion() {
                   to="/busqueda-empleados"
                   className="block py-2 px-3 text-white rounded md:rounded-none md:hover:bg-transparent md:border-0 md:hover:text-blue-200 md:p-0 transition-colors duration-200 hover:bg-blue-600 md:hover:scale-105"
                 >
-                  Búsqueda Empleados
+                  Empleados
                 </Link>
               </li>
             </ul>

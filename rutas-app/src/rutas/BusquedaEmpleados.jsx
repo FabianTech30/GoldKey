@@ -1,7 +1,12 @@
 import ComboBox from "../components/combobox";
 import cities from "../components/Cities";
+import { useState } from "react";
+import { Button, Modal } from "@mui/material";
+import AltaEmpleados from "./AltaEmpleados";
 
 export default function BusquedaEmpleados() {
+  const [isAddRouteOpen, setIsAddRouteOpen] = useState(false);
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="text-center mb-8">
@@ -27,24 +32,9 @@ export default function BusquedaEmpleados() {
         <h2 className="text-2xl font-semibold text-gray-800 mb-4 sm:mb-0">
           LISTA DE EMPLEADOS
         </h2>
-        <a
-          href="/alta-empleados"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 flex items-center"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 mr-2"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
-              clipRule="evenodd"
-            />
-          </svg>
-          Nuevo Empleado
-        </a>
+        <Button variant="contained" onClick={() => setIsAddRouteOpen(true)}>
+          Agregar Empleado
+        </Button>
       </div>
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="overflow-x-auto">
@@ -265,6 +255,13 @@ export default function BusquedaEmpleados() {
           </div>
         </div>
       </div>
+      <Modal
+        className="overflow-y-scroll"
+        open={isAddRouteOpen}
+        onClose={() => setIsAddRouteOpen(false)}
+      >
+        <AltaEmpleados onClose={() => setIsAddRouteOpen(false)} />
+      </Modal>
     </div>
   );
 }

@@ -1,7 +1,13 @@
 import ComboBox from "../components/combobox";
 import cities from "../components/Cities";
+import Button from "@mui/material/Button";
+import { useState } from "react";
+import { Modal } from "@mui/material";
+import AltaEmpleados from "./AltaEmpleados";
 
 export default function BusquedaRutas() {
+  const [isAddRouteOpen, setIsAddRouteOpen] = useState(false);
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       <div className="text-center mb-8">
@@ -17,11 +23,7 @@ export default function BusquedaRutas() {
               CIUDAD
             </label>
             <div className="flex gap-4">
-              <ComboBox
-                options={cities}
-                label="Selecciona una ciudad"
-                className="flex-1"
-              />
+              <ComboBox options={cities} label="Selecciona una ciudad" />
               <button className="bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-6 rounded-lg transition duration-200 shadow-md whitespace-nowrap">
                 Buscar Rutas
               </button>
@@ -32,24 +34,9 @@ export default function BusquedaRutas() {
           <h2 className="text-2xl font-semibold text-gray-800">
             RUTAS POR CIUDAD
           </h2>
-          <a
-            href="/"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                clipRule="evenodd"
-              />
-            </svg>
+          <Button variant="contained" onClick={() => setIsAddRouteOpen(true)}>
             Agregar Ruta
-          </a>
+          </Button>
         </div>
         <div className="relative overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
           <table className="w-full text-sm text-left text-gray-700">
@@ -125,6 +112,13 @@ export default function BusquedaRutas() {
           </div>
         </div>
       </div>
+      <Modal
+        className="overflow-y-scroll"
+        open={isAddRouteOpen}
+        onClose={() => setIsAddRouteOpen(false)}
+      >
+        <AltaEmpleados onClose={() => setIsAddRouteOpen(false)} />
+      </Modal>
     </div>
   );
 }
