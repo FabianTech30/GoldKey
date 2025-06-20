@@ -29,7 +29,7 @@ public class CityController {
     public ResponseEntity<List<GetAllCitiesCityResponseDTO>> getAllCities() {
         List<GetAllCitiesCityResponseDTO> cities = cityService.getAllCities()
                 .stream()
-                .map(city -> new GetAllCitiesCityResponseDTO(city.getId(), city.getName()))
+                .map(city -> new GetAllCitiesCityResponseDTO(city.getId(), city.getName(), city.getEmployees()))
                 .toList();
 
         return ResponseEntity.ok(cities);
@@ -39,7 +39,7 @@ public class CityController {
     public ResponseEntity<GetAllCitiesCityResponseDTO> getCityById(@PathVariable Long id) {
         City city = cityService.getCityById(id);
 
-        return ResponseEntity.ok(new GetAllCitiesCityResponseDTO(city.getId(), city.getName()));
+        return ResponseEntity.ok(new GetAllCitiesCityResponseDTO(city.getId(), city.getName(), city.getEmployees()));
     }
 
     @GetMapping("/{id}/employees")

@@ -3,9 +3,10 @@ import BasicTextFields from "../components/BasicTextField";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import cities from "../components/cities";
 import chofer from "../components/Chofer";
 import tipoServicio from "../components/TipoServicio";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const formSchema = z
   .object({
@@ -16,7 +17,7 @@ const formSchema = z
       .string()
       .min(1, "Nombre es requerido")
       .regex(/^[a-zA-ZñÑ]+$/, "Nombre solo puede contener letras y espacios"),
-    serviceType: z.enum(["PERSONAL", "ITEMS"], {
+    type: z.enum(["PERSONAL", "ITEMS"], {
       message: "Tipo de servicio es requerido",
     }),
     driverId: z.number({
@@ -29,7 +30,7 @@ const formSchema = z
       .gt(0, "Capacidad debe ser mayor a 0"),
   })
   .superRefine((data, ctx) => {
-    if (data.serviceType === "ITEMS") {
+    if (data.type === "ITEMS") {
       if (data.capacity > 100) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -39,7 +40,7 @@ const formSchema = z
       }
     }
 
-    if (data.serviceType === "PERSONAL") {
+    if (data.type === "PERSONAL") {
       if (data.capacity > 34) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -52,6 +53,7 @@ const formSchema = z
   });
 
 export default function AltaRutas({ onClose }) {
+  const [cities, setCities] = useState([]);
   const {
     register,
     handleSubmit,
@@ -64,13 +66,19 @@ export default function AltaRutas({ onClose }) {
     defaultValues: {
       cityId: null,
       name: "",
-      serviceType: null,
+      type: null,
       driverId: null,
       capacity: 0,
     },
   });
 
   const formValues = watch();
+
+  useEffect(() => {
+    axios.get("/cities").then((response) => {
+      setCities(response.data);
+    });
+  }, []);
 
   return (
     <Card
@@ -83,10 +91,10 @@ export default function AltaRutas({ onClose }) {
         flexDirection: "column",
         gap: 4,
       }}
-      onSubmit={handleSubmit((data) => {
+      onSubmit={handleSubmit(async (data) => {
         console.log("Form submitted with data:", data);
+        await axios.post("/routes", data);
         reset();
-        // onClose();
       })}
     >
       <h1 className="text-3xl font-bold text-gray-800 text-center">
@@ -98,9 +106,10 @@ export default function AltaRutas({ onClose }) {
           setValue("cityId", value?.id || null, {
             shouldValidate: true,
           });
+          setValue("driverId", null);
         }}
         options={cities}
-        getOptionLabel={(option) => option.label}
+        getOptionLabel={(option) => option.name}
         getOptionKey={(option) => option.id}
         renderInput={(params) => (
           <TextField
@@ -121,15 +130,13 @@ export default function AltaRutas({ onClose }) {
         fullWidth
       />
       <Autocomplete
-        value={
-          tipoServicio.find((t) => t.id === formValues.serviceType) ?? null
-        }
+        value={tipoServicio.find((t) => t.id === formValues.type) ?? null}
         options={tipoServicio}
         getOptionLabel={(option) => option.label}
         getOptionKey={(option) => option.id}
         onChange={(_, value) => {
           // @ts-ignore
-          setValue("serviceType", value?.id || null, {
+          setValue("type", value?.id || null, {
             shouldValidate: true,
           });
         }}
@@ -138,20 +145,32 @@ export default function AltaRutas({ onClose }) {
             {...params}
             label="Selecciona un tipo de servicio"
             variant="outlined"
-            error={!!errors.serviceType}
-            helperText={errors.serviceType?.message}
+            error={!!errors.type}
+            helperText={errors.type?.message}
           />
         )}
       />
       <Autocomplete
-        value={chofer.find((c) => c.id === formValues.driverId) ?? null}
-        options={chofer}
+        value={
+          cities
+            .find((c) => c.id === formValues.cityId)
+            ?.employees.find(
+              (employee) => employee.id === formValues.driverId
+            ) ?? null
+        }
+        options={
+          cities.find((c) => c.id === formValues.cityId)?.employees || []
+        }
         onChange={(_, value) => {
           setValue("driverId", value?.id || null, {
             shouldValidate: true,
           });
         }}
-        getOptionLabel={(option) => option.label}
+        getOptionLabel={(option) =>
+          [option.firstName, option.lastName, option.middleName]
+            .filter(Boolean)
+            .join(" ")
+        }
         getOptionKey={(option) => option.id}
         renderInput={(params) => (
           <TextField
@@ -162,6 +181,7 @@ export default function AltaRutas({ onClose }) {
             helperText={errors.driverId?.message}
           />
         )}
+        disabled={!formValues.cityId}
       />
       <TextField
         label="Capacidad"

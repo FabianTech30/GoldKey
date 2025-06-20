@@ -6,8 +6,6 @@ import lombok.Data;
 
 @Data
 public class RouteDTO {
-    private Long id;
-
     @NotBlank(message = "Name is required")
     @Size(max = 15, message = "Name cannot exceed 15 characters")
     @Pattern(regexp = "^[a-zA-Z0-9 ]+$", message = "Name can only contain alphanumeric characters")
