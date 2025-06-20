@@ -29,14 +29,19 @@ export default function BusquedaRutas() {
     },
   ]);
 
-  useEffect(() => {
-    if (cityId) {
-      axios.get(`/cities/${cityId}/routes`).then((response) => {
-        setRoutes(response.data);
-      });
-    } else {
+  const getRoutes = (cityId) => {
+    if (!cityId) {
       setRoutes([]);
+      return;
     }
+
+    axios.get(`/cities/${cityId}/routes`).then((response) => {
+      setRoutes(response.data);
+    });
+  };
+
+  useEffect(() => {
+    getRoutes(cityId);
   }, [cityId]);
 
   useEffect(() => {
@@ -47,7 +52,6 @@ export default function BusquedaRutas() {
 
   const handleEdit = (id) => {
     console.log(`Editar ruta con id: ${id}`);
-    // Implementar lógica de edición aquí
   };
 
   const handleDelete = (id) => {
@@ -56,12 +60,7 @@ export default function BusquedaRutas() {
         .delete(`/routes/${id}`)
         .then(() => {
           alert("Ruta eliminada exitosamente");
-          // Actualizar la lista de rutas después de eliminar
-          if (cityId) {
-            axios.get(`/cities/${cityId}/routes`).then((response) => {
-              setRoutes(response.data);
-            });
-          }
+          getRoutes(cityId);
         })
         .catch(() => {
           alert("Error al eliminar ruta, ya tiene empleados asignados");
@@ -180,12 +179,7 @@ export default function BusquedaRutas() {
         <AltaRutas
           onClose={() => {
             setIsAddRouteOpen(false);
-            // Actualizar la lista de rutas después de agregar una nueva
-            if (cityId) {
-              axios.get(`/cities/${cityId}/routes`).then((response) => {
-                setRoutes(response.data);
-              });
-            }
+            getRoutes(cityId);
           }}
         />
       </Modal>
