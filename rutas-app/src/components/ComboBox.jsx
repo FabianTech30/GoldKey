@@ -1,9 +1,6 @@
+import { Autocomplete, TextField } from "@mui/material";
 
-import React from 'react';
-import { Autocomplete, TextField } from '@mui/material';
-import top100Films from './Cities';
-
-export default function ComboBox({options, label}) {
+export default function ComboBox({ options, label }) {
   return (
     <Autocomplete
       options={options}
@@ -11,4 +8,3 @@ export default function ComboBox({options, label}) {
     />
   );
 }
-
