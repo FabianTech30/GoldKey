@@ -13,7 +13,7 @@ export default function EditarEmpleados({ employee, onClose }) {
     salary: employee?.salary || "",
     active: employee?.active || false,
   });
-
+ 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -96,7 +96,7 @@ export default function EditarEmpleados({ employee, onClose }) {
           disabled={loading}
         />
         <TextField
-          label="Apellido Paterno *"
+          label="Apellido Paterno"
           name="lastName"
           value={formData.lastName}
           onChange={handleChange}
@@ -113,7 +113,7 @@ export default function EditarEmpleados({ employee, onClose }) {
           disabled={loading}
         />
         <DatePicker
-          label="Fecha de Nacimiento *"
+          label="Fecha de Nacimiento"
           value={formData.birthDate}
           onChange={handleDateChange}
           disabled={loading}

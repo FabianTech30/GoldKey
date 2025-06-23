@@ -8,16 +8,19 @@ import tipoServicio from "../components/TipoServicio";
 
 const formSchema = z
   .object({
-    cityId: z.number().optional(), // Opcional si no se envía al PUT
-    name: z.string().optional(), // Opcional si no se envía al PUT
-    type: z.enum(["PERSONAL", "ITEMS", "INTERURBANA"], {
+    cityId: z.number({
+      message: "Ciudad es requerida",
+    }),
+    name: z
+      .string()
+      .min(1, "Nombre es requerido")
+      .regex(/^[a-zA-ZñÑ\s]+$/, "Nombre solo puede contener letras y espacios"),
+    type: z.enum(["PERSONAL", "ITEMS"], {
       message: "Tipo de servicio es requerido",
     }),
-    driverId: z
-      .number({
-        message: "Chofer es requerido",
-      })
-      .gt(0, "Debe seleccionar un chofer válido"),
+    driverId: z.number({
+      message: "Chofer es requerido",
+    }),
     capacity: z
       .number({
         message: "Capacidad es requerida",
@@ -25,42 +28,29 @@ const formSchema = z
       .gt(0, "Capacidad debe ser mayor a 0"),
   })
   .superRefine((data, ctx) => {
-    if (data.type === "ITEMS") {
-      if (data.capacity > 100) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Capacidad para servicio de items no puede ser mayor a 100",
-          path: ["capacity"],
-        });
-      }
+    if (data.type === "ITEMS" && data.capacity > 100) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Capacidad para servicio de artículos no puede ser mayor a 100",
+        path: ["capacity"],
+      });
     }
 
-    if (data.type === "PERSONAL") {
-      if (data.capacity > 34) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Capacidad para servicio personal no puede ser mayor a 34",
-          path: ["capacity"],
-        });
-      }
-    }
-
-    if (data.type === "INTERURBANA") {
-      if (data.capacity > 50) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Capacidad para servicio interurbano no puede ser mayor a 50",
-          path: ["capacity"],
-        });
-      }
+    if (data.type === "PERSONAL" && data.capacity > 34) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Capacidad para servicio personal no puede ser mayor a 34",
+        path: ["capacity"],
+      });
     }
   });
 
-export default function EditarRutas({ routeId, currentCityId, routes, onClose }) {
+export default function EditarRutas({ route, onClose }) {
   const [cities, setCities] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [routeData, setRouteData] = useState(null);
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [initialized, setInitialized] = useState(false);
+  
   const {
     register,
     handleSubmit,
@@ -81,138 +71,90 @@ export default function EditarRutas({ routeId, currentCityId, routes, onClose })
 
   const formValues = watch();
 
-  // Cargar ciudades
   useEffect(() => {
-    axios.get("/cities").then((response) => {
-      setCities(response.data);
-    });
-  }, []);
+    const loadData = async () => {
+      try {
+        // Verificar si la ruta existe y tiene datos válidos
+        if (!route || !route.id) {
+          setError("No se ha proporcionado una ruta válida para editar");
+          setInitialized(true);
+          return;
+        }
 
-  // Cargar datos de la ruta a editar
-  useEffect(() => {
-    if (routeId && cities.length > 0) {
-      // Primero buscar en las rutas actuales (más eficiente)
-      let foundRoute = routes?.find(route => route.id === routeId);
-      
-      if (foundRoute) {
-        // Añadir el cityId actual
-        foundRoute = { ...foundRoute, cityId: currentCityId };
-        setRouteData(foundRoute);
+        const citiesResponse = await axios.get("/cities");
+        setCities(citiesResponse.data);
         
-        // Precargar los valores del formulario
-        setValue("cityId", foundRoute.cityId);
-        setValue("name", foundRoute.name);
-        setValue("type", foundRoute.type);
-        setValue("driverId", foundRoute.driverId || foundRoute.driver?.id);
-        setValue("capacity", foundRoute.capacity);
-        
-        setLoading(false);
-      } else {
-        // Si no encontramos la ruta, intentar cargar desde el endpoint
-        axios
-          .get(`/routes/${routeId}`)
-          .then((response) => {
-            const route = response.data;
-            setRouteData(route);
-            
-            // Precargar los valores del formulario
-            setValue("cityId", route.cityId || currentCityId);
-            setValue("name", route.name);
-            setValue("type", route.type);
-            setValue("driverId", route.driverId || route.driver?.id);
-            setValue("capacity", route.capacity);
-            
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.error("Error al cargar la ruta:", error);
-            alert("Error al cargar los datos de la ruta. El endpoint /routes/{id} no está disponible.");
-            setLoading(false);
-            onClose();
-          });
+        // Establecer valores iniciales del formulario
+        reset({
+          cityId: route.city?.id || null,
+          name: route.name || "",
+          type: route.type || null,
+          driverId: route.driver?.id || null,
+          capacity: route.capacity || 0,
+        });
+
+        setInitialized(true);
+      } catch (error) {
+        console.error("Error loading data:", error);
+        setError("Error al cargar los datos necesarios");
+        setInitialized(true);
       }
-    }
-  }, [routeId, setValue, cities, routes, currentCityId, onClose]);
+    };
+    
+    loadData();
+  }, [route, reset]);
 
   const onSubmit = async (data) => {
+    if (!route?.id) {
+      setError("No se ha seleccionado una ruta válida para editar");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
     try {
-      console.log("Datos a enviar:", data);
-      
-      // Construir la URL con query parameters
-      const params = new URLSearchParams({
-        type: data.type,
-        capacity: data.capacity.toString(),
-        driverId: data.driverId.toString()
+      await axios.put(`/routes/${route.id}`, null, {
+        params: {
+          type: data.type,
+          capacity: data.capacity,
+          driverId: data.driverId
+        }
       });
-      
-      // Si tu API también acepta name y cityId como parámetros, descomenta estas líneas:
-      // params.append('name', data.name);
-      // params.append('cityId', data.cityId.toString());
-      
-      const url = `/routes/${routeId}?${params.toString()}`;
-      console.log("URL final:", url);
-      
-      await axios.put(url);
-      alert("Ruta actualizada exitosamente");
-      onClose();
+      onClose(true); // Indica que la operación fue exitosa
     } catch (error) {
-      console.error("Error al actualizar la ruta:", error);
-      
-      // Mostrar mensaje de error más específico
-      if (error.response) {
-        const status = error.response.status;
-        const message = error.response.data?.message || error.response.data || 'Error desconocido';
-        alert(`Error ${status}: ${message}`);
-      } else if (error.request) {
-        alert("Error de conexión: No se pudo conectar con el servidor");
-      } else {
-        alert(`Error: ${error.message}`);
-      }
+      console.error("Error updating route:", error);
+      setError(
+        error.response?.data?.message || 
+        "Error al actualizar la ruta. Por favor intente nuevamente."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) {
+  if (!initialized) {
     return (
-      <Card
-        sx={{
-          maxWidth: "600px",
-          margin: "auto",
-          padding: 8,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "200px",
-        }}
-      >
-        <div className="text-lg mb-4">Cargando datos de la ruta...</div>
-        <div className="text-sm text-gray-600">
-          ID de ruta: {routeId}
-        </div>
+      <Card sx={{ maxWidth: "600px", margin: "auto", p: 4, textAlign: "center" }}>
+        <p>Cargando datos...</p>
       </Card>
     );
   }
 
-  if (!routeData) {
+  if (!route || !route.id) {
     return (
-      <Card
-        sx={{
-          maxWidth: "600px",
-          margin: "auto",
-          padding: 8,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "200px",
-        }}
-      >
-        <div className="text-lg mb-4 text-red-600">
-          No se pudieron cargar los datos de la ruta
+      <Card sx={{ maxWidth: "600px", margin: "auto", p: 4 }}>
+        <h1 className="text-3xl font-bold text-gray-800 text-center mb-4">
+          EDITAR RUTA
+        </h1>
+        <div className="text-red-500 text-center mb-4">
+          {error || "No se ha seleccionado una ruta para editar"}
         </div>
-        <Button onClick={onClose} variant="contained">
-          Cerrar
-        </Button>
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button onClick={() => onClose(false)} variant="outlined">
+            Cerrar
+          </Button>
+        </Box>
       </Card>
     );
   }
@@ -223,139 +165,135 @@ export default function EditarRutas({ routeId, currentCityId, routes, onClose })
       sx={{
         maxWidth: "600px",
         margin: "auto",
-        padding: 8,
+        padding: 4,
         display: "flex",
         flexDirection: "column",
-        gap: 4,
+        gap: 3,
       }}
       onSubmit={handleSubmit(onSubmit)}
     >
-      <h1 className="text-3xl font-bold text-gray-800 text-center">
+      <h1 className="text-2xl font-bold text-gray-800 text-center">
         EDITAR RUTA
       </h1>
       
+      {error && (
+        <div className="text-red-500 text-center mb-3 p-2 bg-red-50 rounded">
+          {error}
+        </div>
+      )}
+      
       <Autocomplete
-        value={cities.find((c) => c.id === formValues.cityId) ?? null}
+        value={cities.find((c) => c.id === formValues.cityId) || null}
         onChange={(_, value) => {
-          setValue("cityId", value?.id || null, {
-            shouldValidate: true,
-          });
-          // Limpiar el chofer cuando cambie la ciudad
-          setValue("driverId", null);
+          setValue("cityId", value?.id || null, { shouldValidate: true });
+          setValue("driverId", null); // Resetear chofer al cambiar ciudad
         }}
         options={cities}
-        getOptionLabel={(option) => option.name}
-        getOptionKey={(option) => option.id}
+        getOptionLabel={(option) => option.name || ""}
+        isOptionEqualToValue={(option, value) => option.id === value?.id}
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Ciudad (solo lectura)"
+            label="Ciudad *"
             variant="outlined"
             error={!!errors.cityId}
-            helperText={errors.cityId?.message || "La ciudad no se puede cambiar al editar"}
-            disabled={true} // Deshabilitar el campo de ciudad
+            helperText={errors.cityId?.message}
+            disabled={loading}
           />
         )}
+        disabled={loading}
       />
-
+      
       <TextField
-        label="Nombre de la ruta (solo lectura)"
+        label="Nombre de la ruta *"
         variant="outlined"
         error={!!errors.name}
-        helperText={errors.name?.message || "El nombre no se puede cambiar al editar"}
+        helperText={errors.name?.message}
         {...register("name")}
         fullWidth
-        disabled={true} // Deshabilitar el campo de nombre
+        disabled={loading}
       />
-
+      
       <Autocomplete
-        value={tipoServicio.find((t) => t.id === formValues.type) ?? null}
+        value={tipoServicio.find((t) => t.value === formValues.type) ?? null}
         options={tipoServicio}
         getOptionLabel={(option) => option.label}
-        getOptionKey={(option) => option.id}
+        isOptionEqualToValue={(option, value) => option.value === value?.value}
         onChange={(_, value) => {
-          setValue(
-            "type",
-            value?.id as "PERSONAL" | "ITEMS" | "INTERURBANA" || null,
-            {
-              shouldValidate: true,
-            }
-          );
+          // Asegúrate de guardar el value (PERSONAL/ITEMS) no el objeto completo
+          setValue("type", value?.value || null, {
+            shouldValidate: true,
+          });
         }}
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Selecciona un tipo de servicio"
+            label="Tipo de servicio *"
             variant="outlined"
             error={!!errors.type}
             helperText={errors.type?.message}
+            disabled={loading}
           />
         )}
+        disabled={loading}
       />
-
+      
       <Autocomplete
         value={
           cities
             .find((c) => c.id === formValues.cityId)
-            ?.employees.find(
-              (employee) => employee.id === formValues.driverId
-            ) ?? null
+            ?.employees?.find((e) => e.id === formValues.driverId) || null
         }
         options={
           cities.find((c) => c.id === formValues.cityId)?.employees || []
         }
-        onChange={(_, value) => {
-          setValue("driverId", value?.id || null, {
-            shouldValidate: true,
-          });
-        }}
-        getOptionLabel={(option) =>
-          [option.firstName, option.lastName, option.middleName]
-            .filter(Boolean)
-            .join(" ")
+        getOptionLabel={(option) => 
+          [option.firstName, option.lastName].filter(Boolean).join(" ")
         }
-        getOptionKey={(option) => option.id}
+        isOptionEqualToValue={(option, value) => option.id === value?.id}
+        onChange={(_, value) => {
+          setValue("driverId", value?.id || null, { shouldValidate: true });
+        }}
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Selecciona un chofer"
+            label="Chofer *"
             variant="outlined"
             error={!!errors.driverId}
             helperText={errors.driverId?.message}
+            disabled={!formValues.cityId || loading}
           />
         )}
-        disabled={false} // Permitir cambiar chofer
+        disabled={!formValues.cityId || loading}
       />
-
+      
       <TextField
-        label="Capacidad"
+        label="Capacidad *"
         type="number"
         variant="outlined"
         error={!!errors.capacity}
         helperText={errors.capacity?.message}
-        {...register("capacity", {
-          valueAsNumber: true,
-        })}
+        {...register("capacity", { valueAsNumber: true })}
         fullWidth
-        onKeyDown={(e) => {
-          if (["e", "E", "+", "-"].includes(e.key)) {
-            e.preventDefault();
-          }
-        }}
+        InputProps={{ inputProps: { min: 1 } }}
+        onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+        disabled={loading}
       />
-
-      <Box
-        sx={{
-          justifyContent: "end",
-          display: "flex",
-          gap: 2,
-        }}
-      >
-        <Button variant="contained" type="submit">
-          Actualizar
-        </Button>
-        <Button type="button" onClick={onClose}>
+      
+      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 2 }}>
+        <Button 
+          variant="outlined" 
+          onClick={() => onClose(false)}
+          disabled={loading}
+        >
           Cancelar
+        </Button>
+        <Button 
+          variant="contained" 
+          type="submit"
+          disabled={loading}
+        >
+          {loading ? "Guardando..." : "Guardar Cambios"}
         </Button>
       </Box>
     </Card>
