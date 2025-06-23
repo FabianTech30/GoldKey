@@ -13,7 +13,7 @@ export default function EditarEmpleados({ employee, onClose }) {
     salary: employee?.salary || "",
     active: employee?.active || false,
   });
- 
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -38,38 +38,43 @@ export default function EditarEmpleados({ employee, onClose }) {
     setError(null);
 
     try {
-      // Validación de campos requeridos
-      if (!formData.firstName || !formData.lastName || !formData.birthDate || !formData.salary) {
+      if (
+        !formData.firstName ||
+        !formData.lastName ||
+        !formData.birthDate ||
+        !formData.salary
+      ) {
         throw new Error("Todos los campos marcados con * son obligatorios");
       }
 
-      // Convertir el salario a número
       const salaryNumber = parseFloat(formData.salary);
       if (isNaN(salaryNumber)) {
         throw new Error("El sueldo debe ser un número válido");
       }
 
-      // Preparar TODOS los parámetros para la URL
       const params = new URLSearchParams();
-      params.append('firstName', formData.firstName.trim());
-      params.append('lastName', formData.lastName.trim());
-      params.append('motherLastName', formData.motherLastName.trim());
-      params.append('birthDate', formData.birthDate.format("YYYY-MM-DD"));
-      params.append('salary', salaryNumber.toString());
-      params.append('active', formData.active);
+      params.append("firstName", formData.firstName.trim());
+      params.append("lastName", formData.lastName.trim());
+      params.append("motherLastName", formData.motherLastName.trim());
+      params.append("birthDate", formData.birthDate.format("YYYY-MM-DD"));
+      params.append("salary", salaryNumber.toString());
+      params.append("active", formData.active);
 
-      // Enviar la solicitud PUT con TODOS los parámetros en la URL
-      const response = await axios.put(`/employees/${employee.id}?${params.toString()}`);
+      const response = await axios.put(
+        `/employees/${employee.id}?${params.toString()}`
+      );
 
       if (response.status === 200) {
         alert("¡Empleado actualizado correctamente!");
-        onClose(); // Cerrar el modal y refrescar la lista
+        onClose();
       }
     } catch (error) {
       console.error("Error completo:", error);
-      setError(error.response?.data?.message || 
-              error.message || 
-              "Error al actualizar el empleado. Verifica los datos e intenta nuevamente.");
+      setError(
+        error.response?.data?.message ||
+          error.message ||
+          "Error al actualizar el empleado. Verifica los datos e intenta nuevamente."
+      );
     } finally {
       setLoading(false);
     }
@@ -78,14 +83,10 @@ export default function EditarEmpleados({ employee, onClose }) {
   return (
     <div className="bg-white rounded-lg p-6 mx-auto my-8 max-w-md">
       <h2 className="text-2xl font-bold mb-4 text-center">Editar Empleado</h2>
-      
       {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
-          {error}
-        </div>
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>
       )}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <TextField
           label="Nombre *"
           name="firstName"
@@ -121,7 +122,7 @@ export default function EditarEmpleados({ employee, onClose }) {
             textField: {
               fullWidth: true,
               required: true,
-            }
+            },
           }}
         />
         <TextField
@@ -133,9 +134,9 @@ export default function EditarEmpleados({ employee, onClose }) {
           fullWidth
           required
           disabled={loading}
-          inputProps={{ 
+          inputProps={{
             step: "0.01",
-            min: "0"
+            min: "0",
           }}
         />
         <FormControlLabel
@@ -150,17 +151,13 @@ export default function EditarEmpleados({ employee, onClose }) {
           }
           label={formData.active ? "Activo" : "Inactivo"}
         />
-        <div className="flex justify-end space-x-2">
-          <Button 
-            variant="outlined" 
-            onClick={onClose}
-            disabled={loading}
-          >
+        <div className="flex justify-end gap-2">
+          <Button variant="outlined" onClick={onClose} disabled={loading}>
             Cancelar
           </Button>
-          <Button 
-            variant="contained" 
-            type="submit" 
+          <Button
+            variant="contained"
+            type="submit"
             color="primary"
             disabled={loading}
           >

@@ -1,10 +1,10 @@
 import { Autocomplete, Button, Modal, TextField } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import AltaEmpleados from "./AltaEmpleados";
 import EditarEmpleados from "./EditarEmpleado";
-import dayjs from "dayjs";
 
 export default function BusquedaEmpleados() {
   const [isAddEmployeeOpen, setIsAddEmployeeOpen] = useState(false);
@@ -16,33 +16,30 @@ export default function BusquedaEmpleados() {
   const [sortModel, setSortModel] = useState([
     {
       field: "id",
-      sort: "asc", // GridSortDirection expects the literal "asc" or "desc"
+      sort: "asc",
     },
   ]);
 
-  // Cargar las ciudades al iniciar
   useEffect(() => {
     axios.get("/cities").then((response) => {
       setCities(response.data);
     });
   }, []);
 
-  // Cargar empleados cuando se selecciona una ciudad
   useEffect(() => {
     if (cityId) {
-      loadEmployees();
+      loadEmployees(cityId);
     } else {
       setEmployees([]);
     }
   }, [cityId]);
 
-  const loadEmployees = () => {
+  const loadEmployees = (cityId) => {
     axios.get(`/cities/${cityId}/employees`).then((response) => {
       setEmployees(response.data);
     });
   };
 
-  // Formatear el sueldo como moneda
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("es-MX", {
       style: "currency",
@@ -52,7 +49,7 @@ export default function BusquedaEmpleados() {
   };
 
   const handleEdit = (id) => {
-    const employee = employees.find(emp => emp.id === id);
+    const employee = employees.find((emp) => emp.id === id);
     if (employee) {
       setCurrentEmployee(employee);
       setIsEditEmployeeOpen(true);
@@ -150,8 +147,7 @@ export default function BusquedaEmpleados() {
                 <span className="font-medium">
                   {dayjs(params.value).format("DD/MM/YYYY")}
                 </span>
-              )
-            ,
+              ),
             },
             {
               field: "salary",
@@ -170,7 +166,10 @@ export default function BusquedaEmpleados() {
               width: 120,
               sortable: true,
               renderCell: (params) => (
-                <span className={`font-medium ${params.row.active ? "text-green-600" : "text-red-600"}`}
+                <span
+                  className={`font-medium ${
+                    params.row.active ? "text-green-600" : "text-red-600"
+                  }`}
                 >
                   {params.row.active ? "Activo" : "Inactivo"}
                 </span>
@@ -232,7 +231,6 @@ export default function BusquedaEmpleados() {
           }}
         />
       </Modal>
-      
       <Modal
         open={isEditEmployeeOpen}
         onClose={() => setIsEditEmployeeOpen(false)}
