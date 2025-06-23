@@ -4,12 +4,15 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import AltaRutas from "./AltaRutas";
+import EditarRutas from "./EditarRutas";
 
 export default function BusquedaRutas() {
   const [isAddRouteOpen, setIsAddRouteOpen] = useState(false);
+  const [isEditRouteOpen, setIsEditRouteOpen] = useState(false);
   const [cityId, setCityId] = useState(null);
   const [cities, setCities] = useState([]);
   const [routes, setRoutes] = useState([]);
+  const [currentRoute, setCurrentRoute] = useState(null);
   const [sortModel, setSortModel] = useState([
     {
       field: "id",
@@ -51,7 +54,8 @@ export default function BusquedaRutas() {
   }, []);
 
   const handleEdit = (id) => {
-    console.log(`Editar ruta con id: ${id}`);
+    setCurrentRoute(routes.find((route) => route.id === id));
+    setIsEditRouteOpen(true);
   };
 
   const handleDelete = (id) => {
@@ -180,6 +184,17 @@ export default function BusquedaRutas() {
           onClose={() => {
             setIsAddRouteOpen(false);
             getRoutes(cityId);
+          }}
+        />
+      </Modal>
+      <Modal open={isEditRouteOpen} onClose={() => setIsEditRouteOpen(false)}>
+        <EditarRutas
+          route={currentRoute}
+          onClose={() => {
+            setIsEditRouteOpen(false);
+            if (cityId) {
+              getRoutes(cityId);
+            }
           }}
         />
       </Modal>

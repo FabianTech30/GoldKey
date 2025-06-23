@@ -4,6 +4,7 @@ import gm.rutasback.model.City;
 import gm.rutasback.model.Employee;
 import gm.rutasback.model.Route;
 import gm.rutasback.model.RouteType;
+import gm.rutasback.repository.CityRepository;
 import gm.rutasback.repository.RouteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,11 +14,12 @@ import java.util.List;
 @Service
 public class RouteService {
     private final RouteRepository routeRepository;
-
+    private final CityRepository cityRepository;
     private final EmployeeService employeeService;
 
-    public RouteService(RouteRepository routeRepository, EmployeeService employeeService) {
+    public RouteService(RouteRepository routeRepository, CityRepository cityRepository, EmployeeService employeeService) {
         this.routeRepository = routeRepository;
+        this.cityRepository = cityRepository;
         this.employeeService = employeeService;
     }
 
@@ -32,7 +34,8 @@ public class RouteService {
     }
 
     @Transactional
-    public Route updateRoute(Long id, RouteType type, Integer capacity, Employee driver) throws IllegalArgumentException {
+    public Route updateRoute(Long id, RouteType type, Integer capacity, Employee driver,
+                             String name, Long cityId) throws IllegalArgumentException {
         Route route = routeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Route not found"));
 
@@ -41,6 +44,10 @@ public class RouteService {
         route.setType(type);
         route.setCapacity(capacity);
         route.setDriver(driver);
+        route.setName(name);
+        City city = cityRepository.findById(cityId)
+                .orElseThrow(() -> new IllegalArgumentException("City not found"));
+        route.setCity(city);
 
         return routeRepository.save(route);
     }

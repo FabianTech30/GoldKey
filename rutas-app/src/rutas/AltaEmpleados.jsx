@@ -82,6 +82,7 @@ export default function AltaEmpleados({ onClose }) {
             ...data,
             birthDate: dayjs(data.birthDate).format("YYYY-MM-DD"),
           });
+          alert("¡Empleado creado exitosamente!");
           reset();
         })}
       >

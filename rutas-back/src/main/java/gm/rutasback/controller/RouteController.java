@@ -82,9 +82,13 @@ public class RouteController {
             @PathVariable Long id,
             @RequestParam RouteType type,
             @RequestParam Integer capacity,
-            @RequestParam Long driverId) {
+            @RequestParam Long driverId,
+            @RequestParam String name,
+            @RequestParam Long cityId
+    ) {
         Employee driver = employeeService.findEmployeeById(driverId);
-        Route route = routeService.updateRoute(id, type, capacity, driver);
+        Route route = routeService.updateRoute(id, type, capacity, driver,
+                name, cityId);
 
         return ResponseEntity.ok(new UpdateRouteResponseDTO(
                 route.getId(),

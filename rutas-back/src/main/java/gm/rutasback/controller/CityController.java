@@ -65,7 +65,9 @@ public class CityController {
                                 route.getId(),
                                 route.getName(),
                                 route.getType(),
-                                route.getCapacity()
+                                route.getCapacity(),
+                                id,
+                                route.getDriver().getId()
                         )
                 ).toList()
         );
