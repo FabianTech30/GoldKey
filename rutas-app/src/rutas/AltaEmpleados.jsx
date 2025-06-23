@@ -90,7 +90,7 @@ export default function AltaEmpleados({ onClose }) {
           ALTA DE EMPLEADOS
         </h1>
         <Autocomplete
-          value={cities.find((c) => c.label === formValues.cityId) ?? null}
+          value={cities.find((c) => c.id === formValues.cityId) ?? null}
           onChange={(_, newValue) => {
             setValue("cityId", newValue?.id ?? null, {
               shouldValidate: true,
