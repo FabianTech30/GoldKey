@@ -3,17 +3,20 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import AltaEmpleados from "./AltaEmpleados";
+import EditarEmpleados from "./EditarEmpleado";
 import dayjs from "dayjs";
 
 export default function BusquedaEmpleados() {
   const [isAddEmployeeOpen, setIsAddEmployeeOpen] = useState(false);
+  const [isEditEmployeeOpen, setIsEditEmployeeOpen] = useState(false);
+  const [currentEmployee, setCurrentEmployee] = useState(null);
   const [cityId, setCityId] = useState(null);
   const [cities, setCities] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [sortModel, setSortModel] = useState([
     {
       field: "id",
-      sort: "asc",
+      sort: "asc", // GridSortDirection expects the literal "asc" or "desc"
     },
   ]);
 
@@ -27,13 +30,17 @@ export default function BusquedaEmpleados() {
   // Cargar empleados cuando se selecciona una ciudad
   useEffect(() => {
     if (cityId) {
-      axios.get(`/cities/${cityId}/employees`).then((response) => {
-        setEmployees(response.data);
-      });
+      loadEmployees();
     } else {
       setEmployees([]);
     }
   }, [cityId]);
+
+  const loadEmployees = () => {
+    axios.get(`/cities/${cityId}/employees`).then((response) => {
+      setEmployees(response.data);
+    });
+  };
 
   // Formatear el sueldo como moneda
   const formatCurrency = (amount) => {
@@ -42,6 +49,28 @@ export default function BusquedaEmpleados() {
       currency: "MXN",
       minimumFractionDigits: 2,
     }).format(amount);
+  };
+
+  const handleEdit = (id) => {
+    const employee = employees.find(emp => emp.id === id);
+    if (employee) {
+      setCurrentEmployee(employee);
+      setIsEditEmployeeOpen(true);
+    }
+  };
+
+  const handleDelete = (id) => {
+    if (confirm("¿Estás seguro de que deseas eliminar este empleado?")) {
+      axios
+        .delete(`/employees/${id}`)
+        .then(() => {
+          alert("Empleado eliminado exitosamente");
+          loadEmployees();
+        })
+        .catch(() => {
+          alert("Error al eliminar empleado, ya tiene rutas asignadas");
+        });
+    }
   };
 
   return (
@@ -117,8 +146,12 @@ export default function BusquedaEmpleados() {
               headerName: "Fecha Nacimiento",
               width: 170,
               sortable: true,
-              valueFormatter: (params) =>
-                dayjs(params.value).format("DD/MM/YYYY"),
+              renderCell: (params) => (
+                <span className="font-medium">
+                  {dayjs(params.value).format("DD/MM/YYYY")}
+                </span>
+              )
+            ,
             },
             {
               field: "salary",
@@ -137,12 +170,7 @@ export default function BusquedaEmpleados() {
               width: 120,
               sortable: true,
               renderCell: (params) => (
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    params.row.active
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
+                <span className={`font-medium ${params.row.active ? "text-green-600" : "text-red-600"}`}
                 >
                   {params.row.active ? "Activo" : "Inactivo"}
                 </span>
@@ -192,7 +220,6 @@ export default function BusquedaEmpleados() {
         />
       </div>
       <Modal
-        className="overflow-y-scroll"
         open={isAddEmployeeOpen}
         onClose={() => setIsAddEmployeeOpen(false)}
       >
@@ -200,30 +227,26 @@ export default function BusquedaEmpleados() {
           onClose={() => {
             setIsAddEmployeeOpen(false);
             if (cityId) {
-              axios.get(`/cities/${cityId}/employees`).then((response) => {
-                setEmployees(response.data);
-              });
+              loadEmployees();
+            }
+          }}
+        />
+      </Modal>
+      
+      <Modal
+        open={isEditEmployeeOpen}
+        onClose={() => setIsEditEmployeeOpen(false)}
+      >
+        <EditarEmpleados
+          employee={currentEmployee}
+          onClose={() => {
+            setIsEditEmployeeOpen(false);
+            if (cityId) {
+              loadEmployees();
             }
           }}
         />
       </Modal>
     </div>
   );
-}
-
-function handleEdit(id) {
-  console.log(`Editar empleado con id: ${id}`);
-}
-
-function handleDelete(id) {
-  if (confirm("¿Estás seguro de que deseas eliminar este empleado?")) {
-    axios
-      .delete(`/employees/${id}`)
-      .then(() => {
-        alert("Empleado eliminado exitosamente");
-      })
-      .catch(() => {
-        alert("Error al eliminar empleado, ya tiene rutas asignadas");
-      });
-  }
 }
