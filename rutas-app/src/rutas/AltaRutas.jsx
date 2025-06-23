@@ -91,6 +91,7 @@ export default function AltaRutas({ onClose }) {
       }}
       onSubmit={handleSubmit(async (data) => {
         await axios.post("/routes", data);
+        alert("Ruta creada correctamente");
         reset();
       })}
     >

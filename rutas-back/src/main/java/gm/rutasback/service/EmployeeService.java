@@ -35,13 +35,21 @@ public class EmployeeService {
     }
 
     @Transactional
-    public Employee updateEmployee(Long id, LocalDate birthDate, Double salary) throws IllegalArgumentException {
+    public Employee updateEmployee(Long id, LocalDate birthDate, Double salary,
+                                   String firstName,
+                                   String lastName,
+                                   String motherLastName,
+                                   Boolean active) throws IllegalArgumentException {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Employee not found"));
 
         validateAge(birthDate);
         employee.setBirthDate(birthDate);
         employee.setSalary(salary);
+        employee.setFirstName(firstName);
+        employee.setLastName(lastName);
+        employee.setMotherLastName(motherLastName);
+        employee.setActive(active);
 
         return employeeRepository.save(employee);
     }

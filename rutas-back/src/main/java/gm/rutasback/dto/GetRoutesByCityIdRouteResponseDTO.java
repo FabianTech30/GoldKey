@@ -11,4 +11,6 @@ public class GetRoutesByCityIdRouteResponseDTO {
     private String name;
     private RouteType type;
     private Integer capacity;
+    private Long cityId;
+    private Long driverId;
 }

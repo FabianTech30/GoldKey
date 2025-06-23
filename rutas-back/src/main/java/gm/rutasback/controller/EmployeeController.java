@@ -59,8 +59,13 @@ public class EmployeeController {
     public ResponseEntity<UpdateEmployeeResponseDTO> updateEmployee(
             @PathVariable Long id,
             @RequestParam LocalDate birthDate,
-            @RequestParam Double salary) {
-        Employee employee = employeeService.updateEmployee(id, birthDate, salary);
+            @RequestParam Double salary,
+            @RequestParam String firstName,
+            @RequestParam String lastName,
+            @RequestParam String motherLastName,
+            @RequestParam Boolean active) {
+        Employee employee = employeeService.updateEmployee(id, birthDate, salary,
+                firstName, lastName, motherLastName, active);
         return ResponseEntity.ok(new UpdateEmployeeResponseDTO(
                 employee.getId(),
                 employee.getFirstName(),

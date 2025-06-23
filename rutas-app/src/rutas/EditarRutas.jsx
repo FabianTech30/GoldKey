@@ -31,7 +31,8 @@ const formSchema = z
     if (data.type === "ITEMS" && data.capacity > 100) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: "Capacidad para servicio de artículos no puede ser mayor a 100",
+        message:
+          "Capacidad para servicio de artículos no puede ser mayor a 100",
         path: ["capacity"],
       });
     }
@@ -49,8 +50,7 @@ export default function EditarRutas({ route, onClose }) {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [initialized, setInitialized] = useState(false);
-  
+
   const {
     register,
     handleSubmit,
@@ -61,11 +61,11 @@ export default function EditarRutas({ route, onClose }) {
   } = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      cityId: null,
-      name: "",
-      type: null,
-      driverId: null,
-      capacity: 0,
+      cityId: route?.cityId || null,
+      name: route?.name || "",
+      type: route?.type || null,
+      driverId: route?.driverId || null,
+      capacity: route?.capacity || 0,
     },
   });
 
@@ -74,33 +74,19 @@ export default function EditarRutas({ route, onClose }) {
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Verificar si la ruta existe y tiene datos válidos
         if (!route || !route.id) {
           setError("No se ha proporcionado una ruta válida para editar");
-          setInitialized(true);
           return;
         }
 
         const citiesResponse = await axios.get("/cities");
         setCities(citiesResponse.data);
-        
-        // Establecer valores iniciales del formulario
-        reset({
-          cityId: route.city?.id || null,
-          name: route.name || "",
-          type: route.type || null,
-          driverId: route.driver?.id || null,
-          capacity: route.capacity || 0,
-        });
-
-        setInitialized(true);
       } catch (error) {
         console.error("Error loading data:", error);
         setError("Error al cargar los datos necesarios");
-        setInitialized(true);
       }
     };
-    
+
     loadData();
   }, [route, reset]);
 
@@ -118,46 +104,22 @@ export default function EditarRutas({ route, onClose }) {
         params: {
           type: data.type,
           capacity: data.capacity,
-          driverId: data.driverId
-        }
+          driverId: data.driverId,
+          name: data.name.trim(),
+          cityId: data.cityId,
+        },
       });
-      onClose(true); // Indica que la operación fue exitosa
+      onClose(true);
     } catch (error) {
       console.error("Error updating route:", error);
       setError(
-        error.response?.data?.message || 
-        "Error al actualizar la ruta. Por favor intente nuevamente."
+        error.response?.data?.message ||
+          "Error al actualizar la ruta. Por favor intente nuevamente."
       );
     } finally {
       setLoading(false);
     }
   };
-
-  if (!initialized) {
-    return (
-      <Card sx={{ maxWidth: "600px", margin: "auto", p: 4, textAlign: "center" }}>
-        <p>Cargando datos...</p>
-      </Card>
-    );
-  }
-
-  if (!route || !route.id) {
-    return (
-      <Card sx={{ maxWidth: "600px", margin: "auto", p: 4 }}>
-        <h1 className="text-3xl font-bold text-gray-800 text-center mb-4">
-          EDITAR RUTA
-        </h1>
-        <div className="text-red-500 text-center mb-4">
-          {error || "No se ha seleccionado una ruta para editar"}
-        </div>
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button onClick={() => onClose(false)} variant="outlined">
-            Cerrar
-          </Button>
-        </Box>
-      </Card>
-    );
-  }
 
   return (
     <Card
@@ -175,18 +137,16 @@ export default function EditarRutas({ route, onClose }) {
       <h1 className="text-2xl font-bold text-gray-800 text-center">
         EDITAR RUTA
       </h1>
-      
       {error && (
         <div className="text-red-500 text-center mb-3 p-2 bg-red-50 rounded">
           {error}
         </div>
       )}
-      
       <Autocomplete
         value={cities.find((c) => c.id === formValues.cityId) || null}
         onChange={(_, value) => {
           setValue("cityId", value?.id || null, { shouldValidate: true });
-          setValue("driverId", null); // Resetear chofer al cambiar ciudad
+          setValue("driverId", null);
         }}
         options={cities}
         getOptionLabel={(option) => option.name || ""}
@@ -203,7 +163,7 @@ export default function EditarRutas({ route, onClose }) {
         )}
         disabled={loading}
       />
-      
+
       <TextField
         label="Nombre de la ruta *"
         variant="outlined"
@@ -213,15 +173,15 @@ export default function EditarRutas({ route, onClose }) {
         fullWidth
         disabled={loading}
       />
-      
+
       <Autocomplete
-        value={tipoServicio.find((t) => t.value === formValues.type) ?? null}
+        value={tipoServicio.find((t) => t.id === formValues.type) ?? null}
         options={tipoServicio}
         getOptionLabel={(option) => option.label}
-        isOptionEqualToValue={(option, value) => option.value === value?.value}
+        isOptionEqualToValue={(option, value) => option.id === value?.id}
         onChange={(_, value) => {
-          // Asegúrate de guardar el value (PERSONAL/ITEMS) no el objeto completo
-          setValue("type", value?.value || null, {
+          // @ts-ignore
+          setValue("type", value?.id || null, {
             shouldValidate: true,
           });
         }}
@@ -237,7 +197,7 @@ export default function EditarRutas({ route, onClose }) {
         )}
         disabled={loading}
       />
-      
+
       <Autocomplete
         value={
           cities
@@ -247,7 +207,7 @@ export default function EditarRutas({ route, onClose }) {
         options={
           cities.find((c) => c.id === formValues.cityId)?.employees || []
         }
-        getOptionLabel={(option) => 
+        getOptionLabel={(option) =>
           [option.firstName, option.lastName].filter(Boolean).join(" ")
         }
         isOptionEqualToValue={(option, value) => option.id === value?.id}
@@ -266,7 +226,7 @@ export default function EditarRutas({ route, onClose }) {
         )}
         disabled={!formValues.cityId || loading}
       />
-      
+
       <TextField
         label="Capacidad *"
         type="number"
@@ -276,23 +236,21 @@ export default function EditarRutas({ route, onClose }) {
         {...register("capacity", { valueAsNumber: true })}
         fullWidth
         InputProps={{ inputProps: { min: 1 } }}
-        onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+        onKeyDown={(e) =>
+          ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()
+        }
         disabled={loading}
       />
-      
+
       <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 2 }}>
-        <Button 
-          variant="outlined" 
+        <Button
+          variant="outlined"
           onClick={() => onClose(false)}
           disabled={loading}
         >
           Cancelar
         </Button>
-        <Button 
-          variant="contained" 
-          type="submit"
-          disabled={loading}
-        >
+        <Button variant="contained" type="submit" disabled={loading}>
           {loading ? "Guardando..." : "Guardar Cambios"}
         </Button>
       </Box>
